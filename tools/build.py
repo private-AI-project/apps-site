@@ -12,6 +12,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROO
 BASE = "https://apps.importants-studio.com"; MAIL = "contact@importants-studio.com"
 L = lambda f: json.load(open(f"tools/{f}"))
 C, M, APPS = L("site_copy.json"), L("marketing.json"), L("apps.json")
+SEO, VERIFY = L("seo.json"), L("verify.json")  # 검색 노출: 앱스토어 이름·키워드·설명(로컬 LLM), 검색엔진 소유 확인 코드
 QUIZ, GAMES, TOOLS = L("quiz_demo.json"), L("lucky_games.json"), L("office_tools.json")
 OUT = "docs"; shutil.rmtree(OUT, ignore_errors=True); os.makedirs(OUT)
 e = lambda s: html.escape(str(s or ""), quote=True)
@@ -30,15 +31,41 @@ for a in APPS:
         r = json.load(urllib.request.urlopen(f"https://itunes.apple.com/lookup?id={a['id']}&country=kr"))["results"][0]
         tmp = os.path.join(d, "_i")
         with urllib.request.urlopen(r["artworkUrl512"].replace("512x512bb", "1024x1024bb"), timeout=60) as f: open(tmp, "wb").write(f.read())
-        save(tmp, f"{d}/icon.png", 512, "PNG"); os.remove(tmp); store = r["trackViewUrl"].split("?")[0]
+        save(tmp, f"{d}/icon.png", 512, "PNG"); os.remove(tmp); store = r["trackViewUrl"].split("?")[0]; rating = (r.get("averageUserRating"), r.get("userRatingCount", 0))
     else:
-        save(a["icon"], f"{d}/icon.png", 512, "PNG"); store = f"https://apps.apple.com/kr/app/id{a['id']}"
+        save(a["icon"], f"{d}/icon.png", 512, "PNG"); store = f"https://apps.apple.com/kr/app/id{a['id']}"; rating = (None, 0)
     m = M[a["slug"]]
     need = set(x["screen"] for x in m["scenes"]) | set(a["hero"]) | set(a.get("extra_shots", []))
     shots = {s: save(os.path.join(a["raw_dir"], s + ".png"), f"{d}/{s}.webp", 1600 if Image.open(os.path.join(a["raw_dir"], s + ".png")).width > Image.open(os.path.join(a["raw_dir"], s + ".png")).height else 900) for s in need}
     mood = save(f"raw/ai/{a['slug']}.png", f"{d}/mood.webp", 1600) if os.path.exists(f"raw/ai/{a['slug']}.png") else ""  # AI 분위기 이미지(tools/gen_images.py)
-    apps.append({**a, "m": m, "store": store, "shots": shots, "mood": mood})
+    apps.append({**a, "m": m, "store": store, "shots": shots, "mood": mood, "rating": rating, "seo": SEO[a["slug"]]})
 A = {a["slug"]: a for a in apps}
+
+from PIL import ImageDraw, ImageFont
+FONT = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
+def og_image(dst, bg, fg, ac, icons, name, sub, shot=None):
+    """공유·검색 미리보기 1200x630: 아이콘·앱 이름·앱스토어 부제 + 화면 한 장"""
+    W, H = 1200, 630; im = Image.new("RGB", (W, H), bg); dr = ImageDraw.Draw(im)
+    x = 80
+    for k, ic in enumerate(icons):
+        i = Image.open(ic).convert("RGBA").resize((132, 132) if len(icons) == 1 else (96, 96)); mk = Image.new("L", i.size, 0)
+        ImageDraw.Draw(mk).rounded_rectangle((0, 0, *i.size), radius=int(i.size[0] * .23), fill=255); im.paste(i, (x + k * 112, 120), mk)
+    f1 = ImageFont.truetype(FONT, 74 if len(name) < 10 else 60, index=6); f2 = ImageFont.truetype(FONT, 34, index=4)
+    dr.text((80, 300), name, font=f1, fill=fg)
+    y = 400
+    lines, cur, maxw = [], "", (560 if shot else 1040)
+    for w in sub.split():
+        t = (cur + " " + w).strip()
+        if dr.textlength(t, font=f2) > maxw and cur: lines.append(cur); cur = w
+        else: cur = t
+    lines.append(cur)
+    for line in lines[:2]: dr.text((80, y), line, font=f2, fill=ac); y += 48
+    if shot:
+        ph = Image.open(shot).convert("RGB"); pw = 300; phh = int(ph.height * pw / ph.width); ph = ph.resize((pw, phh))
+        fr = Image.new("RGB", (pw + 24, phh + 24), "#0b0b0d"); mk = Image.new("L", fr.size, 0); ImageDraw.Draw(mk).rounded_rectangle((0, 0, *fr.size), radius=54, fill=255)
+        im2 = Image.new("L", ph.size, 0); ImageDraw.Draw(im2).rounded_rectangle((0, 0, *ph.size), radius=44, fill=255); fr.paste(ph, (12, 12), im2)
+        im.paste(fr, (W - pw - 120, 70), mk)
+    im.save(dst, "PNG", optimize=True)
 
 def phone(src, alt="", cls="", style=""): return f'<div class="phone {cls}" style="{style}"><img src="{src}" alt="{e(alt)}" loading="lazy"></div>'
 def land(src, alt="", cls=""): return f'<div class="phone land {cls}"><img src="{src}" alt="{e(alt)}" loading="lazy"></div>'
@@ -49,7 +76,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}.in{max-wi
 nav{position:sticky;top:0;z-index:30;backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px)}
 nav .in{display:flex;align-items:center;justify-content:space-between;height:62px}nav b{font-size:17px;letter-spacing:-.02em}nav .links{display:flex;gap:24px;font-size:15px;opacity:.75}
 .phone{position:relative;width:var(--w,280px);height:auto!important;align-self:flex-start;justify-self:center;aspect-ratio:1320/2868;border-radius:calc(var(--w,280px)*.16);background:#0b0b0d;padding:calc(var(--w,280px)*.034);box-shadow:0 30px 80px rgba(17,24,39,.22),0 8px 20px rgba(17,24,39,.10);flex:none}
-.phone img{width:100%;height:100%;object-fit:cover;border-radius:calc(var(--w,280px)*.13)}.phone.land{aspect-ratio:2868/1320;border-radius:calc(var(--w,280px)*.075);padding:calc(var(--w,280px)*.016)}.phone.land img{border-radius:calc(var(--w,280px)*.06)}.phone:before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);pointer-events:none}.photo{max-width:1088px;width:calc(100% - 2*clamp(20px,5vw,56px));margin:0 auto clamp(64px,8vw,110px);border-radius:clamp(24px,3vw,40px);overflow:hidden;aspect-ratio:21/9}.photo img{width:100%;height:100%;object-fit:cover}@media(max-width:700px){.photo{aspect-ratio:4/3}}.fade{-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.phone img{width:100%;height:100%;object-fit:cover;border-radius:calc(var(--w,280px)*.13)}.phone.land{aspect-ratio:2868/1320;border-radius:calc(var(--w,280px)*.075);padding:calc(var(--w,280px)*.016)}.phone.land img{border-radius:calc(var(--w,280px)*.06)}.phone:before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);pointer-events:none}.photo{max-width:1088px;width:calc(100% - 2*clamp(20px,5vw,56px));margin:0 auto clamp(64px,8vw,110px);border-radius:clamp(24px,3vw,40px);overflow:hidden;aspect-ratio:21/9}.photo img{width:100%;height:100%;object-fit:cover}@media(max-width:700px){.photo{aspect-ratio:4/3}}.kw{display:flex;flex-wrap:wrap;gap:8px;padding-top:28px;padding-bottom:8px}.kw span{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid currentColor;opacity:.45}.fade{-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
 .btn{display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 26px;border-radius:16px;font-weight:700;font-size:17px;transition:transform .15s;cursor:pointer;border:0;font-family:inherit}.btn:active{transform:scale(.96)}
 .btn.soon{background:rgba(0,0,0,.07);color:#6b7684;cursor:default}
 footer{padding:44px 0 60px;font-size:14px;opacity:.6}footer .in{display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between}footer .links{display:flex;gap:18px}
@@ -59,11 +86,14 @@ footer{padding:44px 0 60px;font-size:14px;opacity:.6}footer .in{display:flex;gap
 REVEAL_JS = "const o=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');o.unobserve(x.target)}}),{threshold:.12});document.querySelectorAll('.r').forEach(n=>o.observe(n));"
 PRETENDARD = "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');"
 
-def page(path, title, desc, css, body, js="", extra="", navcls=""):
+VERIFY_META = (f'\n<meta name="google-site-verification" content="{e(VERIFY["google"])}">' if VERIFY.get("google") else "") + (f'\n<meta name="naver-site-verification" content="{e(VERIFY["naver"])}">' if VERIFY.get("naver") else "")
+def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favicon.png", og="/og.png"):
     navlinks = "".join(f'<a href="/{a["slug"]}/">{e(a["ko_name"])}</a>' for a in apps)
-    return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,">
-<title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{BASE}{path}">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Importants Studio"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE}{path}">{extra}
+    return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{BASE}{path}"><meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="icon" href="{icon}"><link rel="apple-touch-icon" href="{icon}"><link rel="alternate" type="application/rss+xml" title="Importants Studio" href="{BASE}/rss.xml">{VERIFY_META}
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR"><meta property="og:site_name" content="Importants Studio"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE}{path}">
+<meta property="og:image" content="{BASE}{og}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{BASE}{og}">{extra}
 <style>{BASE_CSS}{css}</style></head><body>
 <nav class="{navcls}"><div class="in"><a href="/"><b>Importants Studio</b></a><div class="links">{navlinks}</div></div></nav>
 {body}
@@ -71,16 +101,24 @@ def page(path, title, desc, css, body, js="", extra="", navcls=""):
 <script>document.addEventListener('DOMContentLoaded',()=>{{{REVEAL_JS}{js}}})</script></body></html>"""
 
 def app_meta(a):
-    m = a["m"]; cat = {"lucky-bite": "EntertainmentApplication", "quiz-bite": "GameApplication", "officekit": "UtilitiesApplication", "maejeum": "LifestyleApplication", "reckoner": "SportsApplication", "floorlog": "UtilitiesApplication"}[a["slug"]]
-    ld = {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": a["ko_name"], "operatingSystem": "iOS", "applicationCategory": cat,
-          "description": m["hero_sub"], "image": f"{BASE}/{a['slug']}/icon.png", "url": f"{BASE}/{a['slug']}/", "author": {"@type": "Organization", "name": "Importants Studio"}}
-    if a["released"]: ld.update({"downloadUrl": a["store"], "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}})
-    x = f'\n<meta property="og:image" content="{BASE}/{a["slug"]}/icon.png"><script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>'
+    cat = {"lucky-bite": "EntertainmentApplication", "quiz-bite": "GameApplication", "officekit": "UtilitiesApplication", "maejeum": "LifestyleApplication", "reckoner": "SportsApplication", "floorlog": "UtilitiesApplication"}[a["slug"]]
+    ld = {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": a["seo"]["store_name"], "alternateName": a["ko_name"], "operatingSystem": "iOS", "applicationCategory": cat,
+          "description": a["seo"]["description"], "keywords": ", ".join(a["seo"]["keywords"]), "image": f"{BASE}/{a['slug']}/icon.png", "screenshot": [f"{BASE}/{a['slug']}/{a['shots'][h]}" for h in a["hero"]],
+          "url": f"{BASE}/{a['slug']}/", "installUrl": a["store"], "publisher": {"@type": "Organization", "name": "Importants Studio", "url": BASE},
+          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}}
+    avg, n = a["rating"]
+    if n: ld["aggregateRating"] = {"@type": "AggregateRating", "ratingValue": round(avg, 1), "ratingCount": n, "bestRating": 5, "worstRating": 1}
+    crumbs = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Importants Studio", "item": f"{BASE}/"}, {"@type": "ListItem", "position": 2, "name": a["ko_name"], "item": f"{BASE}/{a['slug']}/"}]}
+    x = f'\n<meta name="keywords" content="{e(", ".join(a["seo"]["keywords"]))}"><script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script><script type="application/ld+json">{json.dumps(crumbs, ensure_ascii=False)}</script>'
     if a["released"]: x += f'\n<meta name="apple-itunes-app" content="app-id={a["id"]}">'
     return x
 def write(a, css, body, js="", navcls=""):
-    m = a["m"]; title = f"{a['ko_name']} - {m['hero_title'].replace(' / ', ' ')}"
-    open(f"{OUT}/{a['slug']}/index.html", "w").write(page(f"/{a['slug']}/", title, m["hero_sub"], css, body, js, app_meta(a), navcls))
+    sl = a["slug"]; bg, fg, ac = TONE[sl]
+    og_image(f"{OUT}/{sl}/og.png", bg, fg, ac, [f"{OUT}/{sl}/icon.png"], a["ko_name"], a["seo"]["store_name"].split(" - ")[-1].split(": ")[-1], os.path.join(a["raw_dir"], a["hero"][0] + ".png"))
+    kw = f'<div class="in kw">{"".join(f"<span>{e(k)}</span>" for k in a["seo"]["keywords"])}</div>'
+    open(f"{OUT}/{sl}/index.html", "w").write(page(f"/{sl}/", f"{a['seo']['store_name']} | Importants Studio", a["seo"]["description"], css, body + kw, js, app_meta(a), navcls, icon=f"/{sl}/icon.png", og=f"/{sl}/og.png"))
+
+TONE = {"reckoner": ("#F1EEE7", "#141414", "#FF5B14"), "floorlog": ("#E3EDEB", "#1D2B2B", "#2C6A68"), "lucky-bite": ("#FFF1E6", "#2A1A10", "#FF7A3D"), "quiz-bite": ("#EAF0FF", "#1B2440", "#4F7CFF"), "officekit": ("#0F1424", "#FFFFFF", "#7EA0FF"), "maejeum": ("#EFECE5", "#2B2B2D", "#4A5C52")}
 
 # ───────────────────────── 뽑기 한입: 놀이형 ─────────────────────────
 a = A["lucky-bite"]; m = a["m"]; S = a["shots"]; sc = {x["screen"]: x for x in m["scenes"]}
@@ -313,7 +351,6 @@ body = f"""<header class="hero"><div class="in"><div class="r"><span class="chip
 write(a, css, body)
 
 # ───────────────────────── 메인(스튜디오) ─────────────────────────
-TONE = {"reckoner": ("#F1EEE7", "#141414", "#FF5B14"), "floorlog": ("#E3EDEB", "#1D2B2B", "#2C6A68"), "lucky-bite": ("#FFF1E6", "#2A1A10", "#FF7A3D"), "quiz-bite": ("#EAF0FF", "#1B2440", "#4F7CFF"), "officekit": ("#0F1424", "#FFFFFF", "#7EA0FF"), "maejeum": ("#EFECE5", "#2B2B2D", "#4A5C52")}
 cards = ""
 for i, a in enumerate(apps):
     bg, fg, ac = TONE[a["slug"]]; m = a["m"]; hs = (a["hero"] + [x["screen"] for x in a["m"]["scenes"] if x["screen"] not in a["hero"]])[:2]
@@ -330,13 +367,21 @@ body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#FAFAF8;
 .k-lucky-bite .ph .phone{transition:transform .55s cubic-bezier(.34,1.7,.5,1)}.k-lucky-bite:hover .ph .phone:first-child{transform:rotate(-9deg) translateY(-12px)}.k-lucky-bite:hover .ph .phone:last-child{transform:rotate(7deg) translateY(-20px)}.k-quiz-bite .ph .phone{transition:transform .35s cubic-bezier(.3,1.4,.5,1)}.k-quiz-bite .ph .phone:last-child{transition-delay:.12s}.k-quiz-bite:hover .ph .phone{transform:translateY(-26px)}.k-officekit .ph .phone{transition:transform .5s cubic-bezier(.2,.8,.2,1)}.k-officekit .ph .phone:last-child{z-index:1}.k-officekit:hover .ph .phone:first-child{transform:translateX(42px) scale(.9)}.k-officekit:hover .ph .phone:last-child{transform:translateX(-42px) scale(.96)}.k-maejeum .ph .phone{transition:transform 1.4s cubic-bezier(.2,.6,.2,1)}.k-maejeum:hover .ph .phone{transform:translateY(-10px)}.k-maejeum:hover .ph .phone:last-child{transition-delay:.15s}.card:hover{transform:translateY(-4px)}.k-reckoner .ph .phone{transition:transform .22s cubic-bezier(.3,1.8,.5,1)}.k-reckoner:hover .ph .phone:first-child{transform:translateY(-14px)}.k-reckoner:hover .ph .phone:last-child{transform:translateY(-14px) scale(1.04)}.k-floorlog .ph .phone{transition:transform .9s cubic-bezier(.2,.7,.2,1)}.k-floorlog:hover .ph .phone{transform:translateY(-12px)}.k-floorlog:hover .ph .phone:last-child{transition-delay:.25s}
 .c0,.c3{grid-column:span 2;min-height:0;height:clamp(480px,62vh,560px);flex-direction:row}.c0 .tx,.c3 .tx{flex:1;padding:clamp(40px,5vw,64px);align-self:center}.c0 h2,.c3 h2{font-size:clamp(34px,3.6vw,50px)}.c0 .ph,.c3 .ph{flex:1;height:100%;padding-top:clamp(40px,6vh,64px)}.c0 .ph .phone,.c3 .ph .phone{--w:clamp(180px,16vw,220px)}.c0 .ph,.c3 .ph{gap:clamp(14px,2vw,24px);flex:0 0 50%}.c0 .tx,.c3 .tx{min-width:0}.c3{flex-direction:row-reverse}
 @media(max-width:860px){.wall{grid-template-columns:1fr}.c0,.c3{grid-column:auto;flex-direction:column}.c0 .tx,.c3 .tx{padding:40px 30px 0}.card .tx{padding:36px 30px 0}.ph .phone,.c0 .ph .phone,.c3 .ph .phone{--w:140px}.ph{gap:12px;height:300px}.c0 .ph,.c3 .ph{height:300px;padding-top:30px;flex:none}.card{min-height:0}}"""
-open(f"{OUT}/index.html", "w").write(page("/", "Importants Studio", C["STUDIO_SUB"], css,
+org = {"@context": "https://schema.org", "@type": "Organization", "name": "Importants Studio", "url": f"{BASE}/", "logo": f"{BASE}/favicon.png", "email": MAIL}
+site = {"@context": "https://schema.org", "@type": "WebSite", "name": "Importants Studio", "url": f"{BASE}/", "inLanguage": "ko"}
+lst = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{BASE}/{a['slug']}/", "name": a["seo"]["store_name"]} for i, a in enumerate(apps)]}
+fav = Image.new("RGBA", (180, 180), (0, 0, 0, 0)); ImageDraw.Draw(fav).rounded_rectangle((0, 0, 180, 180), radius=40, fill="#16181D"); ImageDraw.Draw(fav).text((90, 92), "I", font=ImageFont.truetype(FONT, 120, index=6), fill="#FFFFFF", anchor="mm"); fav.save(f"{OUT}/favicon.png")
+og_image(f"{OUT}/og.png", "#FAFAF8", "#16181D", "#5E6370", [f"{OUT}/{a['slug']}/icon.png" for a in apps], "Importants Studio", C["STUDIO_SUB"])
+open(f"{OUT}/index.html", "w").write(page("/", "Importants Studio - " + " · ".join(a["ko_name"] for a in apps), C["STUDIO_SUB"] + " " + " · ".join(a["seo"]["store_name"] for a in apps), css,
     f'<header class="hero"><div class="in r"><h1>{br(C["STUDIO_HEADLINE"])}</h1><p>{e(C["STUDIO_SUB"])}</p></div></header><div class="in wall">{cards}</div>',
-    extra=f'\n<meta property="og:image" content="{BASE}/{apps[0]["slug"]}/icon.png">'))
+    extra="".join(f'\n<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in (org, site, lst))))
 
 today = datetime.date.today().isoformat()
 open(f"{OUT}/sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p}</loc><lastmod>{today}</lastmod></url>" for p in ["/"] + [f"/{a['slug']}/" for a in apps]) + "</urlset>\n")
 open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\nDisallow: /review/\nSitemap: {BASE}/sitemap.xml\n")
+rss = "".join(f"<item><title>{e(a['seo']['store_name'])}</title><link>{BASE}/{a['slug']}/</link><guid>{BASE}/{a['slug']}/</guid><description>{e(a['seo']['description'])}</description></item>" for a in apps)
+open(f"{OUT}/rss.xml", "w").write(f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>Importants Studio</title><link>{BASE}/</link><description>{e(C["STUDIO_SUB"])}</description><language>ko</language><lastBuildDate>{datetime.datetime.now(datetime.timezone.utc).strftime("%a, %d %b %Y %H:%M:%S +0000")}</lastBuildDate>{rss}</channel></rss>\n')
+for f in os.listdir("static"): shutil.copy(os.path.join("static", f), OUT)  # 검색엔진 소유 확인 HTML 파일 등
 shutil.copytree("review", f"{OUT}/review")  # 앱 심사관용 견본 파일(목록·검색 노출 안 함)
 open(f"{OUT}/CNAME", "w").write("apps.importants-studio.com\n"); open(f"{OUT}/.nojekyll", "w").write("")
 print("built", [a["slug"] for a in apps])
