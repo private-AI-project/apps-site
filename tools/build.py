@@ -36,7 +36,8 @@ for a in APPS:
     m = M[a["slug"]]
     need = set(x["screen"] for x in m["scenes"]) | set(a["hero"]) | set(a.get("extra_shots", []))
     shots = {s: save(os.path.join(a["raw_dir"], s + ".png"), f"{d}/{s}.webp", 1600 if Image.open(os.path.join(a["raw_dir"], s + ".png")).width > Image.open(os.path.join(a["raw_dir"], s + ".png")).height else 900) for s in need}
-    apps.append({**a, "m": m, "store": store, "shots": shots})
+    mood = save(f"raw/ai/{a['slug']}.png", f"{d}/mood.webp", 1600) if os.path.exists(f"raw/ai/{a['slug']}.png") else ""  # AI 분위기 이미지(tools/gen_images.py)
+    apps.append({**a, "m": m, "store": store, "shots": shots, "mood": mood})
 A = {a["slug"]: a for a in apps}
 
 def phone(src, alt="", cls="", style=""): return f'<div class="phone {cls}" style="{style}"><img src="{src}" alt="{e(alt)}" loading="lazy"></div>'
@@ -48,7 +49,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}.in{max-wi
 nav{position:sticky;top:0;z-index:30;backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px)}
 nav .in{display:flex;align-items:center;justify-content:space-between;height:62px}nav b{font-size:17px;letter-spacing:-.02em}nav .links{display:flex;gap:24px;font-size:15px;opacity:.75}
 .phone{position:relative;width:var(--w,280px);height:auto!important;align-self:flex-start;justify-self:center;aspect-ratio:1320/2868;border-radius:calc(var(--w,280px)*.16);background:#0b0b0d;padding:calc(var(--w,280px)*.034);box-shadow:0 30px 80px rgba(17,24,39,.22),0 8px 20px rgba(17,24,39,.10);flex:none}
-.phone img{width:100%;height:100%;object-fit:cover;border-radius:calc(var(--w,280px)*.13)}.phone.land{aspect-ratio:2868/1320;border-radius:calc(var(--w,280px)*.075);padding:calc(var(--w,280px)*.016)}.phone.land img{border-radius:calc(var(--w,280px)*.06)}.phone:before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);pointer-events:none}.fade{-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.phone img{width:100%;height:100%;object-fit:cover;border-radius:calc(var(--w,280px)*.13)}.phone.land{aspect-ratio:2868/1320;border-radius:calc(var(--w,280px)*.075);padding:calc(var(--w,280px)*.016)}.phone.land img{border-radius:calc(var(--w,280px)*.06)}.phone:before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);pointer-events:none}.photo{max-width:1088px;width:calc(100% - 2*clamp(20px,5vw,56px));margin:0 auto clamp(64px,8vw,110px);border-radius:clamp(24px,3vw,40px);overflow:hidden;aspect-ratio:21/9}.photo img{width:100%;height:100%;object-fit:cover}@media(max-width:700px){.photo{aspect-ratio:4/3}}.fade{-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
 .btn{display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 26px;border-radius:16px;font-weight:700;font-size:17px;transition:transform .15s;cursor:pointer;border:0;font-family:inherit}.btn:active{transform:scale(.96)}
 .btn.soon{background:rgba(0,0,0,.07);color:#6b7684;cursor:default}
 footer{padding:44px 0 60px;font-size:14px;opacity:.6}footer .in{display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between}footer .links{display:flex;gap:18px}
@@ -93,7 +94,7 @@ bento = f"""<div class="bento">
 <div class="cell big r" style="background:#FFE7D6"><div class="t"><span class="k">{e(sc['race']['kicker'])}</span><h3>{br(sc['race']['title'])}</h3><p>{e(sc['race']['body'])}</p></div>{phone(S['race'],'경마 레이스','tilt-r')}</div>
 <div class="cell tall r d1" style="background:#E6EEFF"><div class="t"><span class="k">{e(sc['court']['kicker'])}</span><h3>{br(sc['court']['title'])}</h3><p>{e(sc['court']['body'])}</p></div>{phone(S['court'],'AI 법정','sm')}</div>
 <div class="cell wide r" style="background:#E3F7EE"><div class="t"><span class="k">{e(sc['seats']['kicker'])}</span><h3>{br(sc['seats']['title'])}</h3><p>{e(sc['seats']['body'])}</p></div>{phone(S['seats'],'자리 배치','sm tilt-l')}</div>
-<div class="cell r d1" style="background:#FFF3C9"><div class="t"><span class="k">{e(sc['home']['kicker'])}</span><h3>{br(sc['home']['title'])}</h3><p>{e(sc['home']['body'])}</p></div></div>
+<div class="cell r d1" style="background:#FFF3C9"><div class="t"><span class="k">{e(sc['home']['kicker'])}</span><h3>{br(sc['home']['title'])}</h3><p>{e(sc['home']['body'])}</p></div><img class="mood" src="{a['mood']}" alt="" loading="lazy"></div>
 </div>"""
 css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#FFF8F1;color:#2A1A10}nav{background:rgba(255,248,241,.85)}
 .hero{position:relative;padding:clamp(40px,6vh,80px) 0 24px;overflow:hidden}.hero .in{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:20px}
@@ -114,11 +115,11 @@ css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-ser
 .row span:nth-child(4n+1){background:#FF7A3D;color:#fff}.row span:nth-child(4n+3){background:#FFE07A}@keyframes mq{to{transform:translateX(-50%)}}
 .bento{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:300px;gap:20px;padding:clamp(56px,7vw,96px) 0 clamp(80px,10vw,140px)}.cell{border-radius:36px;padding:34px;position:relative;overflow:hidden}
 .cell .t{position:relative;z-index:2;max-width:330px}.cell .k{font-weight:800;color:#FF7A3D;font-size:15px}.cell h3{font-size:30px;line-height:1.22;letter-spacing:-.04em;margin:10px 0 12px;font-weight:900}.cell p{margin:0;font-size:16px;opacity:.75;line-height:1.6}
-.cell .phone{position:absolute;right:30px;bottom:-200px;--w:240px}.cell .phone.sm{--w:200px;bottom:-160px}.tilt-r{transform:rotate(8deg)}.tilt-l{transform:rotate(-7deg)}
+.cell .phone{position:absolute;right:30px;bottom:-200px;--w:240px}.cell .phone.sm{--w:200px;bottom:-160px}.cell .mood{position:absolute;right:-2%;bottom:-9%;width:46%;mix-blend-mode:multiply;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent);mask-image:radial-gradient(closest-side,#000 62%,transparent)}.tilt-r{transform:rotate(8deg)}.tilt-l{transform:rotate(-7deg)}
 .big{grid-column:span 2;grid-row:span 2}.big .phone{--w:300px;right:60px;bottom:-120px}.tall{grid-row:span 2}.tall .phone{right:50%;margin-right:-100px;bottom:-60px}.wide{grid-column:span 2}.wide .phone{bottom:-260px}
 .end{background:#FF7A3D;color:#fff;text-align:center;padding:clamp(72px,9vw,120px) 24px;border-radius:clamp(32px,4vw,48px);margin:0 auto 30px;max-width:1088px;width:calc(100% - 2*clamp(20px,5vw,56px))}.end img{width:100px;height:100px;border-radius:26px;margin:0 auto 26px;box-shadow:0 14px 30px rgba(0,0,0,.2)}
 .end h2{font-size:clamp(32px,5vw,58px);font-weight:900;letter-spacing:-.045em;margin:0 0 34px}.end .btn.main{background:#fff;color:#FF7A3D;box-shadow:none}.end small{display:block;margin-top:20px;opacity:.8}.end small a{text-decoration:underline}
-@media(max-width:900px){.hero .in,.steps{grid-template-columns:1fr}.step p{margin-bottom:48px}.step:last-child p{margin-bottom:80px}.step .shot{height:400px}.stage{height:520px}.stage .p1{--w:210px}.stage .p2{--w:230px}.st{font-size:14px}.bento{grid-template-columns:1fr;grid-auto-rows:auto}.big,.wide,.tall{grid-column:auto;grid-row:auto}.cell{padding:30px 26px 0;display:flex;flex-direction:column}.cell:last-child{padding-bottom:30px}.cell h3{font-size:26px}.cell .phone,.big .phone,.tall .phone,.wide .phone,.cell .phone.sm{position:relative;right:auto;bottom:auto;margin:28px auto -170px;--w:220px}.stage .p1{left:2%}.stage .p2{right:2%}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stats div{padding:18px 8px;border-radius:22px}.stats b{font-size:34px}.stats span{font-size:13px}}"""
+@media(max-width:900px){.hero .in,.steps{grid-template-columns:1fr}.step p{margin-bottom:48px}.step:last-child p{margin-bottom:80px}.step .shot{height:400px}.stage{height:520px}.stage .p1{--w:210px}.stage .p2{--w:230px}.st{font-size:14px}.bento{grid-template-columns:1fr;grid-auto-rows:auto}.big,.wide,.tall{grid-column:auto;grid-row:auto}.cell{padding:30px 26px 0;display:flex;flex-direction:column}.cell:last-child{padding-bottom:0}.cell .mood{position:relative;right:auto;bottom:auto;width:100%;margin:8px 0 -12px}.cell h3{font-size:26px}.cell .phone,.big .phone,.tall .phone,.wide .phone,.cell .phone.sm{position:relative;right:auto;bottom:auto;margin:28px auto -170px;--w:220px}.stage .p1{left:2%}.stage .p2{right:2%}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stats div{padding:18px 8px;border-radius:22px}.stats b{font-size:34px}.stats span{font-size:13px}}"""
 body = f"""<header class="hero"><div class="in"><div class="r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><h1>{br(m['hero_title'])}</h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}<div class="hstats">{''.join(f'<div><b>{e(n)}</b><span>{e(l)}</span></div>' for n,l in m['stats'])}</div></div>
 <div class="stage r d1">{stickers}{phone(S['roulette'],'돌림판','p1')}{phone(S['ladder'],'사다리타기','p2')}</div></div></header>
 <section class="how"><div class="in"><h2 class="r">{e(C['LB_HOW_T'])}</h2><div class="steps">{''.join(f'<div class="step r d{k}"><div class="shot">{phone(S[sh], C[f"LB_H{k+1}"])}</div><span class="no">{k+1}</span><h3>{e(C[f"LB_H{k+1}"])}</h3><p>{e(C[f"LB_H{k+1}_B"])}</p></div>' for k, sh in enumerate(["home", "draw", "records"]))}</div></div></section>
@@ -158,6 +159,7 @@ body = f"""<header class="hero"><div class="in"><div class="r"><span class="chip
 <div class="in stats">{''.join(f'<div class="r d{i}"><b data-n="{e(n)}">{e(n)}</b><span>{e(l)}</span></div>' for i,(n,l) in enumerate(m['stats']))}</div>
 <section class="play"><div class="in"><h2 class="r">{e(C['QB_DEMO_T'])}</h2><div class="qz r d1" id="qz"></div></div></section>
 <section class="journey"><div class="in"><h2 class="r">{e(C['QB_MAP_T'])}</h2>{stops}</div></section>
+<div class="photo r"><img src="{a['mood']}" alt="" loading="lazy"></div>
 <section class="end r"><img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
 js = f"""const Q={json.dumps(QUIZ, ensure_ascii=False)},T={json.dumps({k: C[k] for k in ['QB_RIGHT','QB_WRONG','QB_NEXT','QB_SHOW']}, ensure_ascii=False)};let qi=0;const box=document.getElementById('qz');
 function esc(s){{return s.replace(/[&<>"]/g,c=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}})[c])}}
@@ -202,6 +204,7 @@ body = f"""<header class="hero"><div class="in r"><span class="chip"><img src="i
 <div class="bars"><div class="bar"><span>{e(C['OK_BEFORE'])}</span><i style="--p:100%;--c:#5B6478"></i></div><div class="bar after"><span>{e(C['OK_AFTER'])}</span><i style="--p:15%;--c:#7EA0FF"></i></div></div></div>
 <div class="vis r d1">{phone(S['compress'],'용량 줄이기 결과')}{phone(S['compare'],'화질 비교')}</div></div></section>
 <section class="tools"><div class="in"><h2 class="r">{e(C['OK_TOOLS_T'])}</h2><div class="grid">{tiles}</div></div></section>
+<div class="photo r"><img src="{a['mood']}" alt="" loading="lazy"></div>
 {feats}
 <section class="end r"><img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
 js = """const sz=document.getElementById('size'),kb=document.getElementById('kb');new IntersectionObserver((es,ob)=>{if(!es[0].isIntersecting)return;ob.disconnect();sz.classList.add('go');const t0=performance.now();
@@ -232,6 +235,7 @@ body = f"""<header class="hero"><div class="in r"><img class="knot" src="icon.pn
 <div class="stage fade r d1">{phone(S['funeral'],'장례 정보')}{phone(S['obit_app'],'부고 보내기')}</div></header>
 <div class="in"><div class="stats">{''.join(f'<div class="r d{i}"><b>{e(n)}</b><span>{e(l)}</span></div>' for i,(n,l) in enumerate(m['stats']))}</div></div>
 <section class="tl"><div class="in"><h2 class="r">{e(C['MJ_TL_T'])}</h2><ol>{tl}</ol></div></section>
+<div class="photo r"><img src="{a['mood']}" alt="" loading="lazy"></div>
 <section class="why"><div class="in grid">{''.join(f'<div class="r d{i}"><h4>{e(w["title"])}</h4><p>{e(w["body"])}</p></div>' for i,w in enumerate(m['why']))}</div></section>
 <section class="end r"><img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
 write(a, css, body)
@@ -268,6 +272,7 @@ rec = sc['record']
 body = f"""<header class="hero"><div class="in"><div class="r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><h1>{br(m['hero_title'])}</h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}
 <div class="hstats">{''.join(f'<div><b>{e(n)}</b><span>{e(l)}</span></div>' for n,l in m['stats'])}</div></div>
 <div class="stage r d1">{land(S['farview'], '가로 멀리 보기')}</div></div></header>
+<div class="photo r"><img src="{a['mood']}" alt="" loading="lazy"></div>
 <section class="rules"><div class="in"><h2 class="r">{e(C['RK_RULE_T'])}</h2><div class="tabs r">{tabs}</div>
 <div class="board r"><div class="flip" id="flip"><span>1</span><span>1</span></div><div><div class="lbl" id="rl">{e(SPORTS[0][0])} · {SPORTS[0][1]}점</div><p id="rt">{e(C[SPORTS[0][2]])}</p></div></div></div></section>
 <section class="modes"><div class="in"><h2 class="r">{e(C['RK_MODE_T'])}</h2>{modes}</div></section>
@@ -308,7 +313,7 @@ body = f"""<header class="hero"><div class="in"><div class="r"><span class="chip
 <div class="stage r d1"><i class="ring"></i><i class="ring b"></i><i class="ring c"></i>{phone(S['record'], '소음 기록')}</div></div></header>
 <section class="flow"><div class="in"><h2 class="r">{e(C['FL_FLOW_T'])}</h2><div class="fl">{flow}</div></div></section>
 <section class="why"><div class="in grid">{''.join(f'<div class="r d{i}"><h4>{e(w["title"])}</h4><p>{e(w["body"])}</p></div>' for i,w in enumerate(m['why']))}</div></section>
-<section class="end r"><img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
+<section class="end r" style="background:linear-gradient(rgba(14,24,24,.62),rgba(14,24,24,.8)),url({a['mood']}) center/cover"><img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
 write(a, css, body)
 
 # ───────────────────────── 메인(스튜디오) ─────────────────────────
