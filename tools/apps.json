@@ -1,0 +1,87 @@
+[
+ {
+  "slug": "lucky-bite",
+  "id": "6824460861",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/luckybite/",
+  "color": "#FF7A3D",
+  "pair": [
+   1,
+   4,
+   3
+  ]
+ },
+ {
+  "slug": "quiz-bite",
+  "id": "6822607845",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/quizbite/",
+  "color": "#4F7CFF",
+  "pair": [
+   1,
+   2,
+   3,
+   0,
+   4,
+   0,
+   0
+  ]
+ },
+ {
+  "slug": "officekit",
+  "id": "6827019707",
+  "released": false,
+  "privacy": "https://importants-studio.com/privacy/officekit/",
+  "color": "#315DFE",
+  "local": {
+   "store_json": "../app/OfficeKit/content/store/asc_copy.json",
+   "name": "오피스킷",
+   "icon": "../app/OfficeKit/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "shots": [
+    "../app/OfficeKit/content/store/1_scan.png",
+    "../app/OfficeKit/content/store/2_home.png",
+    "../app/OfficeKit/content/store/3_compress.png",
+    "../app/OfficeKit/content/store/4_compare.png",
+    "../app/OfficeKit/content/store/5_redact.png",
+    "../app/OfficeKit/content/store/6_library.png"
+   ],
+   "category": "UtilitiesApplication"
+  },
+  "pair": [
+   1,
+   5,
+   3,
+   2,
+   6,
+   0
+  ]
+ },
+ {
+  "slug": "maejeum",
+  "id": "6830643612",
+  "released": false,
+  "privacy": "https://importants-studio.com/privacy/maejeum/",
+  "color": "#4A5C52",
+  "local": {
+   "store_json": "../app/Maejeum/content/store/listing.ko.json",
+   "icon": "../app/Maejeum/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
+   "shots": [
+    "../app/Maejeum/content/store/shots/01_funeral.png",
+    "../app/Maejeum/content/store/shots/02_settle.png",
+    "../app/Maejeum/content/store/shots/03_tasks.png",
+    "../app/Maejeum/content/store/shots/04_web_long.png",
+    "../app/Maejeum/content/store/shots/05_money.png"
+   ],
+   "category": "LifestyleApplication"
+  },
+  "pair": [
+   4,
+   5,
+   2,
+   3,
+   0,
+   0,
+   0
+  ]
+ }
+]
