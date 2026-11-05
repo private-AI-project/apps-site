@@ -56,5 +56,44 @@
    "funeral",
    "obit_app"
   ]
+ },
+ {
+  "slug": "reckoner",
+  "id": "6782576170",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/",
+  "color": "#FF5B14",
+  "raw_dir": "raw/reckoner",
+  "ko_name": "Reckoner",
+  "hero": [
+   "picker",
+   "live"
+  ],
+  "extra_shots": [
+   "farview",
+   "facing",
+   "live",
+   "record",
+   "remote"
+  ]
+ },
+ {
+  "slug": "floorlog",
+  "id": "6778281958",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/",
+  "color": "#2C6A68",
+  "raw_dir": "raw/floorlog",
+  "ko_name": "FloorLog",
+  "hero": [
+   "record",
+   "pattern"
+  ],
+  "extra_shots": [
+   "record",
+   "timeline",
+   "pattern",
+   "pdf"
+  ]
  }
 ]
