@@ -10,6 +10,11 @@
   "hero": [
    "roulette",
    "ladder"
+  ],
+  "extra_shots": [
+   "draw",
+   "home",
+   "records"
   ]
  },
  {
