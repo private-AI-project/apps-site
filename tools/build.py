@@ -72,6 +72,24 @@ def sections(text):
         else: cur[1].append(bullet.group(1) if bullet else t)
     return intro, [x for x in secs if x[1]]
 
+# 소개 사이트엔 기능만: 요금·광고·제한·개인정보·문의 문장은 뺌(2026-11-05 사장님 지시)
+DROP_SEC = re.compile(r"이용권|요금|구독|개인정보|추천해요")
+DROP_SENT = re.compile(r"광고|무료는|무료 이용|무료로 제공|유료|평생|이용권|결제\(|결제\)|\d+,?\d*원|SDK|개인정보처리방침|개인정보는|문의|기기에만 저장|기기 안에서만|저장·전송|익명 분석|기관에 확인|https?://|@|참고용|로그인|서버|데이터가 자동으로 삭제")
+TAG = re.compile(r"\s*\((?:[^()]*?(?:Pro|무료|광고|유료)[^()]*?)\)")
+def clean_sections(secs, heads):
+    out = []
+    for h, items in secs:
+        h = heads.get(h, h)
+        if DROP_SEC.search(h): continue
+        keep = []
+        for it in items:
+            if re.search(r"에서만 가능한 기능$", it): continue
+            it = re.sub(r"^결제 시 ", "", TAG.sub("", it))
+            sents = [x for x in re.split(r"(?<=[.!?])\s+", it) if x and not DROP_SENT.search(x)]
+            if sents: keep.append(" ".join(sents))
+        if keep: out.append((h, keep))
+    return out
+
 def tint(hexc, k):
     h = hexc.lstrip("#"); r, g, b = (int(h[i:i+2], 16) for i in (0, 2, 4))
     return "#%02x%02x%02x" % tuple(round(255 - (255 - c) * k) for c in (r, g, b))
@@ -124,8 +142,8 @@ def store_btn(a, cls="main"):
 
 for a in apps:
     intro, secs = sections(a["desc"])
-    a["intro"] = intro; a["secs"] = secs
-    a["headline"] = a["promo"] or (intro[0] if intro else a["sub"])
+    a["intro"] = [x for x in intro if not DROP_SENT.search(x)]; a["secs"] = clean_sections(secs, a.get("heads", {}))
+    a["headline"] = a["promo"] or (a["intro"][0] if a["intro"] else a["sub"])
     a["bg"] = tint(a["color"], 0.07)
 
 # 메인
@@ -153,7 +171,7 @@ for a in apps:
     feats = []
     k = 0
     for i, (h, items) in enumerate(a["secs"][:7]):
-        n = a["pair"][i] if i < len(a["pair"]) else 0
+        n = a["pair"].get(h, 0)
         shot = shots[n - 1] if n and n <= len(shots) else ""
         rev = k % 2 == 1; k += 1 if shot else 0
         li = "".join(f"<li>{e(x)}</li>" for x in items[:5])

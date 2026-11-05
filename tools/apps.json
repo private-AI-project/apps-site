@@ -5,11 +5,14 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/luckybite/",
   "color": "#FF7A3D",
-  "pair": [
-   1,
-   4,
-   3
-  ]
+  "pair": {
+   "주요 기능": 1,
+   "모임용 뽑기 게임 21종": 4,
+   "모임 도구": 3
+  },
+  "heads": {
+   "무료로 즐길 수 있는 게임 (광고 있음)": "모임용 뽑기 게임 21종"
+  }
  },
  {
   "slug": "quiz-bite",
@@ -17,15 +20,12 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/quizbite/",
   "color": "#4F7CFF",
-  "pair": [
-   1,
-   2,
-   3,
-   0,
-   4,
-   0,
-   0
-  ]
+  "pair": {
+   "이정표 지도": 2,
+   "다섯 가지 퀴즈 유형": 3,
+   "결과 카드와 칭호": 4
+  },
+  "heads": {}
  },
  {
   "slug": "officekit",
@@ -47,14 +47,14 @@
    ],
    "category": "UtilitiesApplication"
   },
-  "pair": [
-   1,
-   5,
-   3,
-   2,
-   6,
-   0
-  ]
+  "pair": {
+   "쉽고 빠른 고품질 문서 스캔": 1,
+   "안전한 신분증·서류 사본 만들기": 5,
+   "사진·PDF 맞춤 용량 줄이기": 3,
+   "쾌적한 파일 변환과 정리": 2,
+   "편리한 보관과 이어서 하기": 6
+  },
+  "heads": {}
  },
  {
   "slug": "maejeum",
@@ -74,14 +74,14 @@
    ],
    "category": "LifestyleApplication"
   },
-  "pair": [
-   4,
-   5,
-   2,
-   3,
-   0,
-   0,
-   0
-  ]
+  "pair": {
+   "모바일 부고장": 4,
+   "장례 기간": 5,
+   "부의금 정산 및 명세서 관리": 2,
+   "기한과 기일": 3
+  },
+  "heads": {
+   "평생 이용권(6,900원, 한 번 결제)": "부의금 정산 및 명세서 관리"
+  }
  }
 ]
