@@ -53,7 +53,7 @@ nav .in{display:flex;align-items:center;justify-content:space-between;height:62p
 footer{padding:44px 0 60px;font-size:14px;opacity:.6}footer .in{display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between}footer .links{display:flex;gap:18px}
 .r{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}.r.on{opacity:1;transform:none}.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
 @media(prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}*{animation:none!important}}
-@media(max-width:640px){nav .links{display:none}}"""
+@media(max-width:640px){nav .links{display:none}}@media(min-width:1700px){body{zoom:1.15}}@media(min-width:1950px){body{zoom:1.3}}@media(min-width:2250px){body{zoom:1.5}}@media(min-width:2800px){body{zoom:1.75}}"""
 REVEAL_JS = "const o=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');o.unobserve(x.target)}}),{threshold:.12});document.querySelectorAll('.r').forEach(n=>o.observe(n));"
 PRETENDARD = "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');"
 
