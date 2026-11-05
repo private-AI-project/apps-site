@@ -264,6 +264,7 @@ open(f"{OUT}/index.html", "w").write(page("/", "Importants Studio", C["STUDIO_SU
 
 today = datetime.date.today().isoformat()
 open(f"{OUT}/sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p}</loc><lastmod>{today}</lastmod></url>" for p in ["/"] + [f"/{a['slug']}/" for a in apps]) + "</urlset>\n")
-open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
+open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\nDisallow: /review/\nSitemap: {BASE}/sitemap.xml\n")
+shutil.copytree("review", f"{OUT}/review")  # 앱 심사관용 견본 파일(목록·검색 노출 안 함)
 open(f"{OUT}/CNAME", "w").write("apps.importants-studio.com\n"); open(f"{OUT}/.nojekyll", "w").write("")
 print("built", [a["slug"] for a in apps])

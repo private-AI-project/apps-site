@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /review/
 Sitemap: https://apps.importants-studio.com/sitemap.xml
