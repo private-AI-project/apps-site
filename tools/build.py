@@ -116,7 +116,7 @@ def write(a, css, body, js="", navcls=""):
     sl = a["slug"]; bg, fg, ac = TONE[sl]
     og_image(f"{OUT}/{sl}/og.png", bg, fg, ac, [f"{OUT}/{sl}/icon.png"], a["ko_name"], a["seo"]["store_name"].split(" - ")[-1].split(": ")[-1], os.path.join(a["raw_dir"], a["hero"][0] + ".png"))
     kw = f'<div class="in kw">{"".join(f"<span>{e(k)}</span>" for k in a["seo"]["keywords"])}</div>'
-    open(f"{OUT}/{sl}/index.html", "w").write(page(f"/{sl}/", f"{a['seo']['store_name']} | Importants Studio", a["seo"]["description"], css, body + kw, js, app_meta(a), navcls, icon=f"/{sl}/icon.png", og=f"/{sl}/og.png"))
+    open(f"{OUT}/{sl}/index.html", "w").write(page(f"/{sl}/", a["seo"]["title"], a["seo"]["description"], css, body + kw, js, app_meta(a), navcls, icon=f"/{sl}/icon.png", og=f"/{sl}/og.png"))
 
 TONE = {"reckoner": ("#F1EEE7", "#141414", "#FF5B14"), "floorlog": ("#E3EDEB", "#1D2B2B", "#2C6A68"), "lucky-bite": ("#FFF1E6", "#2A1A10", "#FF7A3D"), "quiz-bite": ("#EAF0FF", "#1B2440", "#4F7CFF"), "officekit": ("#0F1424", "#FFFFFF", "#7EA0FF"), "maejeum": ("#EFECE5", "#2B2B2D", "#4A5C52")}
 
