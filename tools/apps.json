@@ -5,14 +5,12 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/luckybite/",
   "color": "#FF7A3D",
-  "pair": {
-   "주요 기능": 1,
-   "모임용 뽑기 게임 21종": 4,
-   "모임 도구": 3
-  },
-  "heads": {
-   "무료로 즐길 수 있는 게임 (광고 있음)": "모임용 뽑기 게임 21종"
-  }
+  "raw_dir": "../app/LuckyBite/content/store/raw/ko",
+  "ko_name": "뽑기 한입",
+  "hero": [
+   "roulette",
+   "ladder"
+  ]
  },
  {
   "slug": "quiz-bite",
@@ -20,12 +18,11 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/quizbite/",
   "color": "#4F7CFF",
-  "pair": {
-   "이정표 지도": 2,
-   "다섯 가지 퀴즈 유형": 3,
-   "결과 카드와 칭호": 4
-  },
-  "heads": {}
+  "raw_dir": "../app/QuizBite/content/screenshots/raw",
+  "ko_name": "퀴즈 한입",
+  "hero": [
+   "home"
+  ]
  },
  {
   "slug": "officekit",
@@ -33,28 +30,13 @@
   "released": false,
   "privacy": "https://importants-studio.com/privacy/officekit/",
   "color": "#315DFE",
-  "local": {
-   "store_json": "../app/OfficeKit/content/store/asc_copy.json",
-   "name": "오피스킷",
-   "icon": "../app/OfficeKit/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
-   "shots": [
-    "../app/OfficeKit/content/store/1_scan.png",
-    "../app/OfficeKit/content/store/2_home.png",
-    "../app/OfficeKit/content/store/3_compress.png",
-    "../app/OfficeKit/content/store/4_compare.png",
-    "../app/OfficeKit/content/store/5_redact.png",
-    "../app/OfficeKit/content/store/6_library.png"
-   ],
-   "category": "UtilitiesApplication"
-  },
-  "pair": {
-   "쉽고 빠른 고품질 문서 스캔": 1,
-   "안전한 신분증·서류 사본 만들기": 5,
-   "사진·PDF 맞춤 용량 줄이기": 3,
-   "쾌적한 파일 변환과 정리": 2,
-   "편리한 보관과 이어서 하기": 6
-  },
-  "heads": {}
+  "raw_dir": "../app/OfficeKit/content/store/raw",
+  "ko_name": "오피스킷",
+  "icon": "../app/OfficeKit/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+  "hero": [
+   "library",
+   "home"
+  ]
  },
  {
   "slug": "maejeum",
@@ -62,26 +44,12 @@
   "released": false,
   "privacy": "https://importants-studio.com/privacy/maejeum/",
   "color": "#4A5C52",
-  "local": {
-   "store_json": "../app/Maejeum/content/store/listing.ko.json",
-   "icon": "../app/Maejeum/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
-   "shots": [
-    "../app/Maejeum/content/store/shots/01_funeral.png",
-    "../app/Maejeum/content/store/shots/02_settle.png",
-    "../app/Maejeum/content/store/shots/03_tasks.png",
-    "../app/Maejeum/content/store/shots/04_web_long.png",
-    "../app/Maejeum/content/store/shots/05_money.png"
-   ],
-   "category": "LifestyleApplication"
-  },
-  "pair": {
-   "모바일 부고장": 4,
-   "장례 기간": 5,
-   "부의금 정산 및 명세서 관리": 2,
-   "기한과 기일": 3
-  },
-  "heads": {
-   "평생 이용권(6,900원, 한 번 결제)": "부의금 정산 및 명세서 관리"
-  }
+  "raw_dir": "../app/Maejeum/content/store/raw",
+  "ko_name": "맺음",
+  "icon": "../app/Maejeum/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
+  "hero": [
+   "funeral",
+   "obit_app"
+  ]
  }
 ]
