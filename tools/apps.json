@@ -96,5 +96,26 @@
    "pattern",
    "pdf"
   ]
+ },
+ {
+  "slug": "chaekkan",
+  "id": "6800615398",
+  "released": false,
+  "privacy": "https://importants-studio.com/privacy/chaekkan/",
+  "color": "#F5B544",
+  "raw_dir": "../app/Chaekkan/content/store/raw",
+  "ko_name": "책칸",
+  "icon": "../app/Chaekkan/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+  "hero": [
+   "library",
+   "reader"
+  ],
+  "extra_shots": [
+   "library",
+   "reader",
+   "tts",
+   "comic",
+   "settings"
+  ]
  }
 ]
