@@ -354,6 +354,7 @@ write(a, css, body, "const fl=document.querySelector('.fl');const ff=()=>{const 
 
 # ───────────────────────── 책칸: 밤의 서재형 ─────────────────────────
 a = A["chaekkan"]; m = a["m"]; S = a["shots"]; sc = {x["screen"]: x for x in m["scenes"]}
+WT = save("raw/chaekkan/webtoon.jpg", f"{OUT}/chaekkan/webtoon.webp", 640)  # 견본 만화 '기억의 연금술사' 2~4쪽 세로 이어 붙임(가상 작품)
 SAMPLE = ["낯익은 목소리에 은하는 뒤돌아봤다. 학생회장인 현우였다.", "현우는 회랑 반대편에 서 있었다. 그의 손에는 책 한 권이 들려 있었다.", "“그냥, 생각 좀 하려고.”", "현우는 다가오며 창문 곁에 섰다. 두 사람 사이로 조용한 밤공기가 스며들었다.", "이 학교에서 가장 조용한 곳, 아무도 찾지 않는 별빛 회랑.", "이곳에서만큼은 고민도, 두려움도 모두 사라지는 것 같았다."]  # 가상 견본 작품 '별빛 회랑'(앱 스크린샷용)
 css = PRETENDARD + """@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
 body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#0E1220;color:#E9ECF5}nav{background:rgba(14,18,32,.86);color:#E9ECF5}footer{color:#8A93AD}
@@ -379,12 +380,14 @@ body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#0E1220;
 .feat h3{font-family:"Nanum Myeongjo",serif;font-size:clamp(28px,3.4vw,42px);line-height:1.3;margin:14px 0 16px;font-weight:800}.feat p{font-size:18px;color:#8A93AD;line-height:1.7;margin:0;max-width:430px}
 .why{padding:clamp(72px,9vw,110px) 0;border-top:1px solid #1B2135}.why .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}.why h4{font-size:20px;font-weight:800;margin:0 0 10px;color:#F5B544}.why p{margin:0;color:#8A93AD;line-height:1.7}
 .end{text-align:center;padding:clamp(80px,10vw,120px) 24px;background:#171C2E}.end img{width:92px;height:92px;border-radius:24px;margin:0 auto 24px;box-shadow:0 0 60px rgba(245,181,68,.25)}.end h2{font-family:"Nanum Myeongjo",serif;font-size:clamp(28px,4vw,46px);font-weight:800;margin:0 0 30px}.end small{display:block;margin-top:20px;color:#8A93AD}.end small a{text-decoration:underline}
-.kw span{border-color:#8A93AD}
+.kw span{border-color:#8A93AD}.wt .scr{position:absolute;inset:calc(var(--w)*.034);border-radius:calc(var(--w)*.13);overflow:hidden;background:#000}.wt .scr img{width:100%;height:auto;object-fit:initial;border-radius:0;will-change:transform}
 @media(max-width:900px){.hero .in,.page .in,.tts .in,.feat .in,.why .grid{grid-template-columns:1fr}.feat.rev .tx{order:0}.stage{height:420px;gap:12px}.stage .phone{--w:min(42vw,170px)}.stage .phone:last-child{margin-top:50px}.hstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.paper{height:400px}}"""
 stars = "".join(f'<i class="star" style="left:{x}%;top:{y}%;animation-delay:-{d}s"></i>' for x, y, d in [(8,12,0),(22,30,1.2),(46,8,2.4),(64,22,.6),(84,10,3.1),(92,40,1.8),(30,70,2.7),(74,66,.3),(56,86,3.6),(12,54,1.1)])
 sents = "".join(f"<span>{e(t)}</span> " for t in SAMPLE)
 paras = "".join(f"<p>{e(t)}</p>" for t in SAMPLE)
-feats = "".join(f"""<section class="feat{' rev' if i % 2 else ''}"><div class="in"><div class="tx r"><span class="k">{e(sc[k]['kicker'])}</span><h3>{br(sc[k]['title'])}</h3><p>{e(sc[k]['body'])}</p></div><div class="vis r d1">{phone(S[k], sc[k]['kicker'])}</div></div></section>""" for i, k in enumerate(["library", "comic"]))
+feats = "".join(f"""<section class="feat{' rev' if i % 2 else ''}"><div class="in"><div class="tx r"><span class="k">{e(sc[k]['kicker'])}</span><h3>{br(sc[k]['title'])}</h3><p>{e(sc[k]['body'])}</p></div><div class="vis r d1">{phone(S[k], sc[k]['kicker'])}</div></div></section>""" for i, k in enumerate(["library"]))
+cm = sc["comic"]
+feats += f"""<section class="feat rev wt"><div class="in"><div class="tx r"><span class="k">{e(cm['kicker'])}</span><h3>{br(cm['title'])}</h3><p>{e(cm['body'])}</p></div><div class="vis r d1"><div class="phone"><div class="scr"><img src="{WT}" alt="세로 스크롤 만화" id="wti"></div></div></div></div></section>"""
 rd, ts = sc["reader"], sc["tts"]
 body = f"""<header class="hero">{stars}<div class="in"><div class="r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><h1>{br(m['hero_title'])}</h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}
 <div class="hstats">{''.join(f'<div><b>{e(n)}</b><span>{e(l)}</span></div>' for n,l in m['stats'])}</div></div>
@@ -401,7 +404,8 @@ js = """const fs=document.getElementById('fs'),tx=document.getElementById('tx'),
 const ps=[...tx.children];const fit=()=>{ps.forEach(x=>x.style.display='');const H=tx.clientHeight;let n=0;ps.forEach(x=>{if(x.offsetTop+x.offsetHeight>H)x.style.display='none';else n++});document.getElementById('pg').textContent=n+' / '+ps.length+' 문단';};const setF=v=>{tx.style.fontSize=v+'px';fv.textContent=v;fit();pp.classList.remove('flip');void pp.offsetWidth;pp.classList.add('flip')};addEventListener('resize',fit);fs.oninput=()=>setF(fs.value);setF(18);
 const sp=[...document.querySelectorAll('#rd span')];let si=0;const rd=document.getElementById('rd');
 const tick=()=>{const r=rd.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0){sp.forEach(x=>x.classList.remove('on'));sp[si].classList.add('on');si=(si+1)%sp.length}};
-if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(tick,2200);tick();"""
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(tick,2200);tick();
+const wt=document.getElementById('wti'),ws=wt.closest('.wt');const wf=()=>{const r=ws.getBoundingClientRect(),p=Math.min(1,Math.max(0,(innerHeight-r.top)/(innerHeight+r.height)));const sc=wt.parentElement;wt.style.transform='translateY('+(-(wt.offsetHeight-sc.clientHeight)*p)+'px)'};addEventListener('scroll',wf,{passive:true});addEventListener('resize',wf);wt.complete?wf():wt.onload=wf;"""
 write(a, css, body, js)
 
 # ───────────────────────── 메인(스튜디오) ─────────────────────────
