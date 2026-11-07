@@ -73,7 +73,7 @@ def og_image(dst, bg, fg, ac, icons, name, sub, shot=None):
 
 def phone(src, alt="", cls="", style=""): return f'<div class="phone {cls}" style="{style}"><img src="{src}" alt="{e(alt)}" loading="lazy"></div>'
 def land(src, alt="", cls=""): return f'<div class="phone land {cls}"><img src="{src}" alt="{e(alt)}" loading="lazy"></div>'
-def store_btn(a, cls="main"): return f'<a class="btn {cls}" href="{e(a["store"])}">{e(C["BTN_STORE"])}</a>' if a["released"] else f'<span class="btn soon">{e(C["SOON"])}</span>'
+def store_btn(a, cls="main"): return f'<a class="btn {cls} storebtn" data-id="{a["id"]}" data-slug="{a["slug"]}" href="{e(a["store"])}">{e(C["BTN_STORE"])}</a>' if a["released"] else f'<span class="btn soon">{e(C["SOON"])}</span>'
 
 BASE_CSS = """*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-x:hidden}
 a{color:inherit;text-decoration:none}img{display:block;max-width:100%}.in{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
@@ -90,6 +90,10 @@ footer{padding:44px 0 60px;font-size:14px}footer .in{display:flex;gap:20px;flex-
 REVEAL_JS = "const cu=new IntersectionObserver(es=>es.forEach(x=>{if(!x.isIntersecting)return;cu.unobserve(x.target);const el=x.target,to=+el.dataset.to,t0=performance.now(),f=t=>{const p=Math.min(1,(t-t0)/1300),v=Math.round(to*(1-Math.pow(1-p,3)));el.textContent=v.toLocaleString()+(el.dataset.sf||'');if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}),{threshold:.5});if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('.hstats b,.stats b').forEach(b=>{const t=b.textContent.trim(),mm=t.match(/^([0-9][0-9,]*)(.*)$/);if(mm){b.dataset.to=mm[1].replace(/,/g,'');b.dataset.sf=mm[2];b.textContent='0'+mm[2];cu.observe(b)}});const o=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');o.unobserve(x.target)}}),{threshold:.12});document.querySelectorAll('.r').forEach(n=>o.observe(n));"
 PRETENDARD = "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');"
 
+AN = json.load(open("tools/analytics.json"))
+GA_HEAD = (f'<script async src="https://www.googletagmanager.com/gtag/js?id={AN["ga"]}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag("js",new Date());gtag("config","{AN["ga"]}");</script>' if AN.get("ga") else "")
+# 스토어 버튼: 어디서 왔는지(?from=tool-ladder 등, 없으면 apps-site)를 App Store 캠페인 ct로, pt가 있을 때만
+STORE_JS = "(()=>{const q=new URLSearchParams(location.search).get('from');if(q)try{sessionStorage.setItem('from',q)}catch(e){};let f=q;try{f=f||sessionStorage.getItem('from')}catch(e){};f=(f||'apps-site').replace(/[^a-z0-9-]/gi,'').slice(0,40);const PT=" + json.dumps(AN.get("pt","")) + ";document.querySelectorAll('.storebtn').forEach(b=>{if(PT)b.href=`https://apps.apple.com/app/apple-store/id${b.dataset.id}?pt=${PT}&ct=${f}&mt=8`;b.addEventListener('click',()=>{try{window.gtag&&gtag('event','store_click',{app:b.dataset.slug,from:f})}catch(e){}})})})();"
 VERIFY_META = (f'\n<meta name="google-site-verification" content="{e(VERIFY["google"])}">' if VERIFY.get("google") else "") + (f'\n<meta name="naver-site-verification" content="{e(VERIFY["naver"])}">' if VERIFY.get("naver") else "")
 def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favicon.png", og="/og.png"):
     navlinks = "".join(f'<a href="/{a["slug"]}/">{e(a["ko_name"])}</a>' for a in apps)
@@ -98,11 +102,11 @@ def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favico
 <link rel="icon" href="/favicon.png" sizes="192x192"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Importants Studio" href="{BASE}/rss.xml">{VERIFY_META}
 <meta property="og:type" content="website"><meta property="og:locale" content="ko_KR"><meta property="og:site_name" content="Importants Studio"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE}{path}">
 <meta property="og:image" content="{BASE}{og}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{BASE}{og}">{extra}
-<style>{BASE_CSS}{css}</style></head><body>
+{GA_HEAD}<style>{BASE_CSS}{css}</style></head><body>
 <nav class="{navcls}"><div class="in"><a class="brand" href="https://importants-studio.com/"><img src="/mark.png" alt="" width="24" height="24"><b>Importants Studio</b></a><div class="links">{navlinks}</div></div></nav>
 {body}
 <footer><div class="in"><span>© {YEAR} <a href="https://importants-studio.com/">Importants Studio</a></span><div class="links"><a href="/">{e(C['LINK_ALL'])}</a><a href="mailto:{MAIL}">{e(C['LINK_CONTACT'])}</a></div><details class="fam"><summary>패밀리 사이트</summary><ul><li><a href="https://importants-studio.com/">홈페이지</a></li><li><a href="https://apps.importants-studio.com/" aria-current="page">앱 소개</a></li><li><a href="https://importants-studio.com/tools/">웹 도구</a></li><li><a href="https://importants-studio.com/blog/">블로그</a></li><li><a href="https://importants-studio.com/blogs/">정보 아카이브</a></li></ul></details></div></footer>
-<script>document.addEventListener('DOMContentLoaded',()=>{{{REVEAL_JS}{js}}})</script></body></html>"""
+<script>document.addEventListener('DOMContentLoaded',()=>{{{REVEAL_JS}{js}}});{STORE_JS}</script></body></html>"""
 
 def app_meta(a):
     cat = {"lucky-bite": "EntertainmentApplication", "quiz-bite": "GameApplication", "officekit": "UtilitiesApplication", "maejeum": "LifestyleApplication", "reckoner": "SportsApplication", "floorlog": "UtilitiesApplication", "chaekkan": "BookApplication"}[a["slug"]]
