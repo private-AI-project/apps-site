@@ -6,7 +6,7 @@
 - 맺음: 에디토리얼형(명조, 여백, 시기별 타임라인, 움직임 최소)
 문구: tools/marketing.json·site_copy.json(로컬 LLM 생성), 데모 데이터는 각 앱 원본(quiz_demo·lucky_games·office_tools).
 실행: python3 tools/build.py → docs/"""
-import json, os, html, shutil, urllib.request, datetime
+import json, time, os, html, shutil, urllib.request, datetime
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 BASE = "https://apps.importants-studio.com"; MAIL = "contact@importants-studio.com"
@@ -28,7 +28,11 @@ apps = []
 for a in APPS:
     d = os.path.join(OUT, a["slug"]); os.makedirs(d)
     if a["released"]:
-        r = json.load(urllib.request.urlopen(f"https://itunes.apple.com/lookup?id={a['id']}&country=kr"))["results"][0]
+        for _t in range(8):  # 출시 직후엔 조회가 들쭉날쭉해서 다시 시도
+            _res = json.load(urllib.request.urlopen(f"https://itunes.apple.com/lookup?id={a['id']}&country=kr&_={_t}"))["results"]
+            if _res: break
+            time.sleep(3)
+        r = _res[0]
         tmp = os.path.join(d, "_i")
         with urllib.request.urlopen(r["artworkUrl512"].replace("512x512bb", "1024x1024bb"), timeout=60) as f: open(tmp, "wb").write(f.read())
         save(tmp, f"{d}/icon.png", 512, "PNG"); os.remove(tmp); store = r["trackViewUrl"].split("?")[0]; rating = (r.get("averageUserRating"), r.get("userRatingCount", 0))

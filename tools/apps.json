@@ -32,7 +32,7 @@
  {
   "slug": "officekit",
   "id": "6827019707",
-  "released": false,
+  "released": true,
   "privacy": "https://importants-studio.com/privacy/officekit/",
   "color": "#315DFE",
   "raw_dir": "../app/OfficeKit/content/store/raw",
@@ -46,7 +46,7 @@
  {
   "slug": "maejeum",
   "id": "6830643612",
-  "released": false,
+  "released": true,
   "privacy": "https://importants-studio.com/privacy/maejeum/",
   "color": "#4A5C52",
   "raw_dir": "../app/Maejeum/content/store/raw",
