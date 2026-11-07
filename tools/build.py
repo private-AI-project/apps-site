@@ -95,9 +95,9 @@ def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favico
 <meta property="og:type" content="website"><meta property="og:locale" content="ko_KR"><meta property="og:site_name" content="Importants Studio"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE}{path}">
 <meta property="og:image" content="{BASE}{og}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{BASE}{og}">{extra}
 <style>{BASE_CSS}{css}</style></head><body>
-<nav class="{navcls}"><div class="in"><a href="/"><b>Importants Studio</b></a><div class="links">{navlinks}</div></div></nav>
+<nav class="{navcls}"><div class="in"><a href="https://importants-studio.com/"><b>Importants Studio</b></a><div class="links">{navlinks}</div></div></nav>
 {body}
-<footer><div class="in"><span>© {YEAR} Importants Studio</span><div class="links"><a href="/">{e(C['LINK_ALL'])}</a><a href="mailto:{MAIL}">{e(C['LINK_CONTACT'])}</a></div></div></footer>
+<footer><div class="in"><span>© {YEAR} <a href="https://importants-studio.com/">Importants Studio</a></span><div class="links"><a href="/">{e(C['LINK_ALL'])}</a><a href="mailto:{MAIL}">{e(C['LINK_CONTACT'])}</a></div></div></footer>
 <script>document.addEventListener('DOMContentLoaded',()=>{{{REVEAL_JS}{js}}})</script></body></html>"""
 
 def app_meta(a):
