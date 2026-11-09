@@ -100,7 +100,7 @@
  {
   "slug": "chaekkan",
   "id": "6800615398",
-  "released": false,
+  "released": true,
   "privacy": "https://importants-studio.com/privacy/chaekkan/",
   "color": "#F5B544",
   "raw_dir": "../app/Chaekkan/content/store/raw",
