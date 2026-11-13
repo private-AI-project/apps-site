@@ -8,13 +8,14 @@
   "raw_dir": "../app/LuckyBite/content/store/raw/ko",
   "ko_name": "뽑기 한입",
   "hero": [
-   "roulette",
+   "home",
    "ladder"
   ],
   "extra_shots": [
    "draw",
    "home",
-   "records"
+   "records",
+   "roulette"
   ]
  },
  {
