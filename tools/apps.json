@@ -1,26 +1,5 @@
 [
  {
-  "slug": "fairlypaid",
-  "id": "6834327904",
-  "released": false,
-  "privacy": "https://importants-studio.com/privacy/fairlypaid/",
-  "color": "#101114",
-  "raw_dir": "../app/FairlyPaid/content/store/raw2",
-  "ko_name": "일한만큼 받자",
-  "icon": "../app/FairlyPaid/Resources/Assets.xcassets/AppIcon.appiconset/icon_1024.png",
-  "hero": [
-   "home",
-   "clock"
-  ],
-  "extra_shots": [
-   "home_scrolled",
-   "input",
-   "pay",
-   "timesheet",
-   "widgets"
-  ]
- },
- {
   "slug": "lucky-bite",
   "id": "6824460861",
   "released": true,
@@ -36,67 +15,6 @@
    "draw",
    "home",
    "records"
-  ]
- },
- {
-  "slug": "quiz-bite",
-  "id": "6822607845",
-  "released": true,
-  "privacy": "https://importants-studio.com/privacy/quizbite/",
-  "color": "#4F7CFF",
-  "raw_dir": "../app/QuizBite/content/screenshots/raw",
-  "ko_name": "퀴즈 한입",
-  "hero": [
-   "home"
-  ]
- },
- {
-  "slug": "officekit",
-  "id": "6827019707",
-  "released": true,
-  "privacy": "https://importants-studio.com/privacy/officekit/",
-  "color": "#315DFE",
-  "raw_dir": "../app/OfficeKit/content/store/raw",
-  "ko_name": "오피스킷",
-  "icon": "../app/OfficeKit/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
-  "hero": [
-   "library",
-   "home"
-  ]
- },
- {
-  "slug": "maejeum",
-  "id": "6830643612",
-  "released": true,
-  "privacy": "https://importants-studio.com/privacy/maejeum/",
-  "color": "#4A5C52",
-  "raw_dir": "../app/Maejeum/content/store/raw",
-  "ko_name": "맺음",
-  "icon": "../app/Maejeum/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
-  "hero": [
-   "funeral",
-   "obit_app"
-  ]
- },
- {
-  "slug": "reckoner",
-  "id": "6782576170",
-  "released": true,
-  "privacy": "https://importants-studio.com/privacy/reckoner/",
-  "color": "#FF5B14",
-  "raw_dir": "raw/reckoner",
-  "ko_name": "Reckoner",
-  "hero": [
-   "picker",
-   "live"
-  ],
-  "extra_shots": [
-   "farview",
-   "facing",
-   "live",
-   "record",
-   "remote",
-   "watch"
   ]
  },
  {
@@ -123,6 +41,53 @@
   ]
  },
  {
+  "slug": "reckoner",
+  "id": "6782576170",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/reckoner/",
+  "color": "#FF5B14",
+  "raw_dir": "raw/reckoner",
+  "ko_name": "Reckoner",
+  "hero": [
+   "picker",
+   "live"
+  ],
+  "extra_shots": [
+   "farview",
+   "facing",
+   "live",
+   "record",
+   "remote",
+   "watch"
+  ]
+ },
+ {
+  "slug": "quiz-bite",
+  "id": "6822607845",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/quizbite/",
+  "color": "#4F7CFF",
+  "raw_dir": "../app/QuizBite/content/screenshots/raw",
+  "ko_name": "퀴즈 한입",
+  "hero": [
+   "home"
+  ]
+ },
+ {
+  "slug": "maejeum",
+  "id": "6830643612",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/maejeum/",
+  "color": "#4A5C52",
+  "raw_dir": "../app/Maejeum/content/store/raw",
+  "ko_name": "맺음",
+  "icon": "../app/Maejeum/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
+  "hero": [
+   "funeral",
+   "obit_app"
+  ]
+ },
+ {
   "slug": "chaekkan",
   "id": "6800615398",
   "released": true,
@@ -141,6 +106,41 @@
    "tts",
    "comic",
    "settings"
+  ]
+ },
+ {
+  "slug": "officekit",
+  "id": "6827019707",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/officekit/",
+  "color": "#315DFE",
+  "raw_dir": "../app/OfficeKit/content/store/raw",
+  "ko_name": "오피스킷",
+  "icon": "../app/OfficeKit/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+  "hero": [
+   "library",
+   "home"
+  ]
+ },
+ {
+  "slug": "fairlypaid",
+  "id": "6834327904",
+  "released": false,
+  "privacy": "https://importants-studio.com/privacy/fairlypaid/",
+  "color": "#101114",
+  "raw_dir": "../app/FairlyPaid/content/store/raw2",
+  "ko_name": "일한만큼 받자",
+  "icon": "../app/FairlyPaid/Resources/Assets.xcassets/AppIcon.appiconset/icon_1024.png",
+  "hero": [
+   "home",
+   "clock"
+  ],
+  "extra_shots": [
+   "home_scrolled",
+   "input",
+   "pay",
+   "timesheet",
+   "widgets"
   ]
  }
 ]
