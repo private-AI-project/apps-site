@@ -2,7 +2,7 @@
 """apps.importants-studio.com — 앱마다 성격에 맞춘 다른 레이아웃.
 - 뽑기 한입: 놀이형(직접 돌리는 돌림판, 게임 이름 띠, 벤토 카드)
 - 퀴즈 한입: 여정형(직접 푸는 문제, 스크롤 따라 그려지는 지도 길)
-- 오피스킷: 도구형(줄어드는 용량 숫자·막대, 도구 8가지 벤토)
+- 오피스킷: 도구형(줄어드는 용량 숫자·막대, 도구 12가지 벤토)
 - 맺음: 에디토리얼형(명조, 여백, 시기별 타임라인, 움직임 최소)
 문구: tools/marketing.json·site_copy.json(로컬 LLM 생성), 데모 데이터는 각 앱 원본(quiz_demo·lucky_games·office_tools).
 실행: python3 tools/build.py → docs/"""
@@ -134,13 +134,15 @@ NAMES = ["민준", "서연", "도윤", "하은", "지호", "유나"]  # 데모�
 SEG = ["#FF7A3D", "#4F7CFF", "#2BC48A", "#FFC233", "#B26BFF", "#FF5C8A"]
 wheel = "".join(f'<path d="M100 100 L{100+95*__import__("math").cos(__import__("math").radians(i*60-90)):.2f} {100+95*__import__("math").sin(__import__("math").radians(i*60-90)):.2f} A95 95 0 0 1 {100+95*__import__("math").cos(__import__("math").radians((i+1)*60-90)):.2f} {100+95*__import__("math").sin(__import__("math").radians((i+1)*60-90)):.2f} Z" fill="{SEG[i]}"/>'
                 f'<text x="{100+60*__import__("math").cos(__import__("math").radians(i*60-60)):.1f}" y="{100+60*__import__("math").sin(__import__("math").radians(i*60-60)):.1f}" fill="#fff" font-size="15" font-weight="800" text-anchor="middle" dominant-baseline="middle" transform="rotate({i*60+30} {100+60*__import__("math").cos(__import__("math").radians(i*60-60)):.1f} {100+60*__import__("math").sin(__import__("math").radians(i*60-60)):.1f})">{n}</text>' for i, n in enumerate(NAMES))
-row1 = "".join(f"<span>{e(g)}</span>" for g in GAMES[:13]) * 2; row2 = "".join(f"<span>{e(g)}</span>" for g in GAMES[12:]) * 2
-stickers = "".join(f'<span class="st s{i}">{e(g)}</span>' for i, g in enumerate(["돌림판", "사다리타기", "경마 레이스", "폭탄 돌리기", "AI 법정"]))
+_cam = Image.open(os.path.join(a["raw_dir"], "smile.png")).convert("RGB").crop((48, 502, 1272, 2132)); _cam = _cam.resize((640, round(_cam.height * 640 / _cam.width)), Image.LANCZOS)
+_cam.save(f"{OUT}/lucky-bite/smile-cam.webp", "WEBP", quality=86); LB_CAM = "smile-cam.webp"  # 웃으면 탈락: 실제 캡처의 카메라 부분만(작은 칸에서 폰이 잘려 안 보여서)
+row1 = "".join(f"<span>{e(g)}</span>" for g in GAMES[:len(GAMES) // 2]) * 2; row2 = "".join(f"<span>{e(g)}</span>" for g in GAMES[len(GAMES) // 2:]) * 2
+stickers = "".join(f'<span class="st s{i}">{e(g)}</span>' for i, g in enumerate(["돌림판", "경마 레이스", "구슬 룰렛", "이름 배틀로얄", "웃으면 탈락"]))
 bento = f"""<div class="bento">
 <div class="cell big r" style="background:#FFE7D6"><div class="t"><span class="k">{e(sc['race']['kicker'])}</span><h3>{br(sc['race']['title'])}</h3><p>{e(sc['race']['body'])}</p></div>{phone(S['race'],'경마 레이스','tilt-r')}</div>
-<div class="cell tall r d1" style="background:#E6EEFF"><div class="t"><span class="k">{e(sc['court']['kicker'])}</span><h3>{br(sc['court']['title'])}</h3><p>{e(sc['court']['body'])}</p></div>{phone(S['court'],'AI 법정','sm')}</div>
+<div class="cell tall r d1" style="background:#E6EEFF"><div class="t"><span class="k">{e(sc['arena']['kicker'])}</span><h3>{br(sc['arena']['title'])}</h3><p>{e(sc['arena']['body'])}</p></div>{phone(S['arena'],'이름 배틀로얄','sm')}</div>
 <div class="cell wide r" style="background:#E3F7EE"><div class="t"><span class="k">{e(sc['seats']['kicker'])}</span><h3>{br(sc['seats']['title'])}</h3><p>{e(sc['seats']['body'])}</p></div>{phone(S['seats'],'자리 배치','sm tilt-l')}</div>
-<div class="cell r d1" style="background:#FFF3C9"><div class="t"><span class="k">{e(sc['home']['kicker'])}</span><h3>{br(sc['home']['title'])}</h3><p>{e(sc['home']['body'])}</p></div><img class="mood" src="{a['mood']}" alt="" loading="lazy"></div>
+<div class="cell r d1" style="background:#FFF3C9"><div class="t"><span class="k">{e(sc['smile']['kicker'])}</span><h3>{br(sc['smile']['title'])}</h3></div><img class="cam" src="{LB_CAM}" alt="웃으면 탈락 카메라 화면" loading="lazy"></div>
 </div>"""
 css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#FFF8F1;color:#2A1A10}nav{background:rgba(255,248,241,.85)}
 .hero{position:relative;padding:clamp(40px,6vh,80px) 0 24px;overflow:hidden}.hero .in{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:20px}
@@ -161,7 +163,7 @@ css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-ser
 .row span:nth-child(4n+1){background:#FF7A3D;color:#fff}.row span:nth-child(4n+3){background:#FFE07A}@keyframes mq{to{transform:translateX(-50%)}}
 .bento{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:300px;gap:20px;padding:clamp(56px,7vw,96px) 0 clamp(80px,10vw,140px)}.cell{border-radius:36px;padding:34px;position:relative;overflow:hidden}
 .cell .t{position:relative;z-index:2;max-width:330px}.cell .k{font-weight:800;color:#FF7A3D;font-size:15px}.cell h3{font-size:30px;line-height:1.22;letter-spacing:-.04em;margin:10px 0 12px;font-weight:900}.cell p{margin:0;font-size:16px;opacity:.75;line-height:1.6}
-.cell .phone{position:absolute;right:30px;bottom:-200px;--w:240px}.cell .phone.sm{--w:200px;bottom:-160px}.cell .mood{position:absolute;right:-2%;bottom:-9%;width:46%;mix-blend-mode:multiply;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent);mask-image:radial-gradient(closest-side,#000 62%,transparent)}.tilt-r{transform:rotate(8deg)}.tilt-l{transform:rotate(-7deg)}
+.cell .phone{position:absolute;right:30px;bottom:-200px;--w:240px}.cell .phone.sm{--w:200px;bottom:-160px}.cell .cam{position:absolute;right:28px;bottom:-120px;width:48%;border-radius:22px;box-shadow:0 18px 40px rgba(42,26,16,.18)}@media(max-width:900px){.cell .cam{position:relative;right:auto;bottom:auto;width:78%;margin:24px auto -60px;display:block}}.cell .mood{position:absolute;right:-2%;bottom:-9%;width:46%;mix-blend-mode:multiply;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent);mask-image:radial-gradient(closest-side,#000 62%,transparent)}.tilt-r{transform:rotate(8deg)}.tilt-l{transform:rotate(-7deg)}
 .big{grid-column:span 2;grid-row:span 2}.big .phone{--w:300px;right:60px;bottom:-120px}.tall{grid-row:span 2}.tall .phone{right:50%;margin-right:-100px;bottom:-60px}.wide{grid-column:span 2}.wide .phone{bottom:-260px}
 .end{background:#FF7A3D;color:#fff;text-align:center;padding:clamp(72px,9vw,120px) 24px;border-radius:clamp(32px,4vw,48px);margin:0 auto 30px;max-width:1088px;width:calc(100% - 2*clamp(20px,5vw,56px))}.end img{width:100px;height:100px;border-radius:26px;margin:0 auto 26px;box-shadow:0 14px 30px rgba(0,0,0,.2)}
 .end h2{font-size:clamp(32px,5vw,58px);font-weight:900;letter-spacing:-.045em;margin:0 0 34px}.end .btn.main{background:#fff;color:#FF7A3D;box-shadow:none}.end small{display:block;margin-top:20px;opacity:.8}.end small a{text-decoration:underline}
@@ -225,7 +227,10 @@ ICON = {"scan": '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a
         "pdfCompress": '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M12 11v7m-3-3 3 3 3-3"/>', "imageCompress": '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6M12 3v6m-2-2 2 2 2-2"/>',
         "imageConvert": '<path d="M4 7h13l-3-3M20 17H7l3 3"/>', "photoToPDF": '<rect x="3" y="4" width="10" height="10" rx="2"/><path d="M11 10h10v10H11zM15 14h2"/>',
         "pdfMerge": '<path d="M6 3h6v8H6zM12 13h6v8h-6zM9 11v3a2 2 0 0 0 2 2h1"/>', "pdfPages": '<rect x="4" y="3" width="7" height="9" rx="1"/><rect x="13" y="12" width="7" height="9" rx="1"/><path d="M14 6h5m-2-2 2 2-2 2M10 18H5m2 2-2-2 2-2"/>',
-        "pdfToImage": '<path d="M7 3h7l5 5v13H7z"/><path d="m9 18 3-3 2 2 2-2 1 1"/>'}
+        "pdfToImage": '<path d="M7 3h7l5 5v13H7z"/><path d="m9 18 3-3 2 2 2-2 1 1"/>',
+        "stamp": '<circle cx="12" cy="9" r="5"/><path d="M5 20h14M7 16h10"/>', "pdfLock": '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+        "qrMake": '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 20h2M20 14v2"/>',
+        "cutout": '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="10" r="3"/><path d="M7 18a5 5 0 0 1 10 0"/>'}
 tiles = "".join(f"""<div class="tool r d{i%3}"><svg viewBox="0 0 24 24">{ICON[k]}</svg><b>{e(t)}</b><span>{e(s)}</span></div>""" for i, (k, t, s) in enumerate(TOOLS))
 css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#fff;color:#0F1424}nav{background:rgba(255,255,255,.85);border-bottom:1px solid #EEF0F4}
 .hero{padding:clamp(40px,7vh,88px) 0 0;text-align:center;overflow:hidden}.hero .chip{display:inline-flex;align-items:center;gap:10px;font-weight:700;color:#315DFE}.hero .chip img{width:40px;height:40px;border-radius:10px}
@@ -244,7 +249,7 @@ css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-ser
 .feat .k{color:#315DFE;font-weight:700}.feat h3{font-size:clamp(30px,4vw,48px);letter-spacing:-.05em;line-height:1.18;margin:14px 0 18px;font-weight:800}.feat p{font-size:18px;color:#5B6478;line-height:1.7;margin:0;max-width:430px}
 .end{padding:120px 24px;text-align:center;background:#F5F7FB}.end img{width:96px;height:96px;border-radius:24px;margin:0 auto 24px}.end h2{font-size:clamp(30px,4.6vw,52px);letter-spacing:-.05em;margin:0 0 30px;font-weight:800}.end small{display:block;margin-top:20px;color:#8A93A6}.end small a{text-decoration:underline}
 @media(max-width:900px){.size .in,.feat .in{grid-template-columns:1fr}.feat.rev .tx{order:0}.size .in,.feat .in{grid-template-columns:minmax(0,1fr)}.grid{grid-template-columns:1fr 1fr;gap:10px}.tool{min-height:160px;padding:22px 18px}.tool:first-child,.tool:last-child{grid-column:span 2;grid-row:auto}.tool:first-child{min-height:200px}.hero .stage{height:340px;gap:14px;margin-top:50px}.hero .stage .phone{--w:175px}.hero .stage .phone:first-child{--w:150px;margin-top:60px}.size .vis{gap:14px}.size .phone{--w:150px}.size .phone:last-child{margin-top:40px}.bar{grid-template-columns:60px minmax(0,1fr)}}"""
-feats = "".join(f"""<section class="feat{' rev' if i % 2 else ''}"><div class="in"><div class="tx r"><span class="k">{e(sc[k]['kicker'])}</span><h3>{br(sc[k]['title'])}</h3><p>{e(sc[k]['body'])}</p></div><div class="vis r d1">{phone(S[k], sc[k]['kicker'])}</div></div></section>""" for i, k in enumerate(["scan", "redact"]))
+feats = "".join(f"""<section class="feat{' rev' if i % 2 else ''}"><div class="in"><div class="tx r"><span class="k">{e(sc[k]['kicker'])}</span><h3>{br(sc[k]['title'])}</h3><p>{e(sc[k]['body'])}</p></div><div class="vis r d1">{phone(S[k], sc[k]['kicker'])}</div></div></section>""" for i, k in enumerate(["stamp", "lock", "scan", "redact"]))
 body = f"""<header class="hero"><div class="in r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><h1>{br(m['hero_title'])}</h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}</div>
 <div class="stage fade r d1"><span class="fx" style="left:12%;top:22%"><b class="ft">PDF</b>3.2MB → 480KB</span><span class="fx" style="right:11%;top:14%;animation-delay:-1.6s"><b class="ft j">JPG</b>4.1MB</span><span class="fx" style="right:16%;top:52%;animation-delay:-3s"><b class="ft h">HEIC</b>→ JPG</span>{phone(S['library'],'보관함')}<div class="phone"><img src="{S['home']}" alt="홈" loading="lazy"><i class="scan"></i></div></div></header>
 <section class="size" id="size"><div class="in"><div class="r"><h2>{e(C['OK_COMPARE_T'])}</h2><div class="num"><span id="kb">3,200</span></div>
