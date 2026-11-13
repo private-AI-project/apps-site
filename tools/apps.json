@@ -1,5 +1,26 @@
 [
  {
+  "slug": "fairlypaid",
+  "id": "6834327904",
+  "released": false,
+  "privacy": "https://importants-studio.com/privacy/fairlypaid/",
+  "color": "#101114",
+  "raw_dir": "../app/FairlyPaid/content/store/raw2",
+  "ko_name": "일한만큼 받자",
+  "icon": "../app/FairlyPaid/Resources/Assets.xcassets/AppIcon.appiconset/icon_1024.png",
+  "hero": [
+   "home",
+   "clock"
+  ],
+  "extra_shots": [
+   "home_scrolled",
+   "input",
+   "pay",
+   "timesheet",
+   "widgets"
+  ]
+ },
+ {
   "slug": "lucky-bite",
   "id": "6824460861",
   "released": true,
