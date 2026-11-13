@@ -92,9 +92,13 @@
   ],
   "extra_shots": [
    "record",
-   "timeline",
    "pattern",
-   "pdf"
+   "pdf",
+   "measure",
+   "auto",
+   "speech",
+   "calendar",
+   "steps"
   ]
  },
  {
