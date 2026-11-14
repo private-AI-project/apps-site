@@ -94,19 +94,16 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/chaekkan/",
   "color": "#F5B544",
-  "raw_dir": "../app/Chaekkan/content/store/raw",
+  "raw_dir": "../app/Chaekkan/content/store/v2/raw/iphone",
   "ko_name": "책칸",
   "icon": "../app/Chaekkan/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
   "hero": [
-   "library",
-   "reader"
+   "s1_library",
+   "s2_reader"
   ],
   "extra_shots": [
-   "library",
-   "reader",
-   "tts",
-   "comic",
-   "settings"
+   "s1_library",
+   "s3_original"
   ]
  },
  {

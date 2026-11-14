@@ -451,27 +451,47 @@ body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#0E1220;
 .bar .wv{display:flex;align-items:center;gap:3px;height:24px}.bar .wv i{width:3px;background:#8C7BFF;border-radius:2px;animation:wv 1s ease-in-out infinite}.bar .wv i:nth-child(2n){animation-delay:.2s}.bar .wv i:nth-child(3n){animation-delay:.4s}@keyframes wv{0%,100%{height:6px}50%{height:22px}}.bar small{color:#8A93AD;font-family:"Pretendard Variable",sans-serif;font-size:13px}
 .feat{padding:clamp(40px,6vw,80px) 0}.feat .in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center}.feat.rev .tx{order:2}.feat .vis{display:flex;justify-content:center}.feat .phone{--w:clamp(220px,min(22vw,38vh),280px);box-shadow:0 40px 80px rgba(0,0,0,.5)}
 .feat h3{font-family:"Nanum Myeongjo",serif;font-size:clamp(28px,3.4vw,42px);line-height:1.3;margin:14px 0 16px;font-weight:800}.feat p{font-size:18px;color:#8A93AD;line-height:1.7;margin:0;max-width:430px}
-.why{padding:clamp(72px,9vw,110px) 0;border-top:1px solid #1B2135}.why .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}.why h4{font-size:20px;font-weight:800;margin:0 0 10px;color:#F5B544}.why p{margin:0;color:#8A93AD;line-height:1.7}
+.why{padding:clamp(72px,9vw,110px) 0;border-top:1px solid #1B2135}.why .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(20px,3vw,40px)}.why h4{font-size:20px;font-weight:800;margin:0 0 10px;color:#F5B544}.why p{margin:0;color:#8A93AD;line-height:1.7}
 .end{text-align:center;padding:clamp(80px,10vw,120px) 24px;background:#171C2E}.end img{width:92px;height:92px;border-radius:24px;margin:0 auto 24px;box-shadow:0 0 60px rgba(245,181,68,.25)}.end h2{font-family:"Nanum Myeongjo",serif;font-size:clamp(28px,4vw,46px);font-weight:800;margin:0 0 30px}.end small{display:block;margin-top:20px;color:#8A93AD}.end small a{text-decoration:underline}
 .kw span{border-color:#8A93AD}.wt .scr{position:absolute;inset:calc(var(--w)*.034);border-radius:calc(var(--w)*.13);overflow:hidden;background:#000}.wt .scr img{width:100%;height:auto;object-fit:initial;border-radius:0;will-change:transform}
+.feat .vis{position:relative;--w:clamp(220px,min(22vw,38vh),280px)}.pro{display:inline-block;margin-left:10px;padding:3px 11px;border-radius:99px;background:#F5B544;color:#0E1220;font-size:13px;font-weight:800;vertical-align:1px}
+.phone.tr img.b{position:absolute;left:calc(var(--w)*.034);top:calc(var(--w)*.034);width:calc(100% - var(--w)*.068);height:calc(100% - var(--w)*.068);animation:trx 7s ease-in-out infinite}@keyframes trx{0%,22%{opacity:0}34%,88%{opacity:1}100%{opacity:0}}
+.cardup{position:absolute;left:50%;width:calc(var(--w)*1.16);border-radius:calc(var(--w)*.05);border:1px solid rgba(255,255,255,.18);box-shadow:0 26px 60px rgba(0,0,0,.65);transform:translate(-50%,0);animation:cup 6.5s cubic-bezier(.2,.8,.2,1) infinite}@keyframes cup{0%{opacity:0;transform:translate(-50%,46px)}14%,82%{opacity:1;transform:translate(-50%,0)}94%,100%{opacity:0;transform:translate(-50%,46px)}}
+.cardup.pulse{animation:cpl 6s ease-in-out infinite}@keyframes cpl{0%,100%{transform:translate(-50%,0) scale(1)}12%{transform:translate(-50%,0) scale(1.06)}24%{transform:translate(-50%,0) scale(1)}}
+.faq{padding:clamp(56px,7vw,90px) 0;border-top:1px solid #1B2135}.faq .in{max-width:820px}.faq h2{font-family:"Nanum Myeongjo",serif;font-size:clamp(24px,3vw,34px);font-weight:800;margin:0 0 22px}.faq details{border-bottom:1px solid #232A42;padding:18px 0}.faq summary{cursor:pointer;font-weight:700;font-size:18px}.faq p{margin:12px 0 0;color:#8A93AD;line-height:1.75}
 @media(max-width:900px){.hero .in,.page .in,.tts .in,.feat .in,.why .grid{grid-template-columns:1fr}.feat.rev .tx{order:0}.stage{height:420px;gap:12px}.stage .phone{--w:min(42vw,170px)}.stage .phone:last-child{margin-top:50px}.hstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.paper{height:400px}}"""
 stars = "".join(f'<i class="star" style="left:{x}%;top:{y}%;animation-delay:-{d}s"></i>' for x, y, d in [(8,12,0),(22,30,1.2),(46,8,2.4),(64,22,.6),(84,10,3.1),(92,40,1.8),(30,70,2.7),(74,66,.3),(56,86,3.6),(12,54,1.1)])
 sents = "".join(f"<span>{e(t)}</span> " for t in SAMPLE)
 paras = "".join(f"<p>{e(t)}</p>" for t in SAMPLE)
-feats = "".join(f"""<section class="feat{' rev' if i % 2 else ''}"><div class="in"><div class="tx r"><span class="k">{e(sc[k]['kicker'])}</span><h3>{br(sc[k]['title'])}</h3><p>{e(sc[k]['body'])}</p></div><div class="vis r d1">{phone(S[k], sc[k]['kicker'])}</div></div></section>""" for i, k in enumerate(["library"]))
-cm = sc["comic"]
-feats += f"""<section class="feat rev wt"><div class="in"><div class="tx r"><span class="k">{e(cm['kicker'])}</span><h3>{br(cm['title'])}</h3><p>{e(cm['body'])}</p></div><div class="vis r d1"><div class="phone"><div class="scr"><img src="{WT}" alt="세로 스크롤 만화" id="wti"></div></div></div></div></section>"""
-rd, ts = sc["reader"], sc["tts"]
+# 1.1: 스토어 스크린샷(app/Chaekkan/content/store/v2)과 같은 문장·같은 화면. 구간마다 움직임 하나(번역 전환·만화 스크롤·카드 올라옴)
+def ck_crop(name, box, dst, w=900):
+    im = Image.open(os.path.join(a["raw_dir"], name + ".png")).convert("RGB").crop(box); im = im.resize((w, int(im.height * w / im.width)))
+    im.save(f"{OUT}/chaekkan/{dst}.webp", "WEBP", quality=86); return f"{dst}.webp"
+CK_MARK = ck_crop("s6_mark_tab", (40, 1380, 1280, 1990), "card-mark"); CK_TOC = ck_crop("s7_pdf_toc", (40, 1385, 1280, 1985), "card-toc"); CK_VOL = ck_crop("s8_settings", (56, 1040, 1264, 1232), "card-vol")
+def ck_tx(x): return f"""<div class="tx r"><span class="k">{e(x['kicker'])}</span>{'<span class="pro">Pro</span>' if x.get('pro') else ''}<h3>{br(x['title'])}</h3>{'<p>' + e(x['body']) + '</p>' if x.get('body') else ''}</div>"""
+def ck_feat(k, vis, rev, cls=""): return f"""<section class="feat{' rev' if rev else ''} {cls}"><div class="in">{ck_tx(SCN[k])}<div class="vis r d1">{vis}</div></div></section>"""
+SCN = {x["kicker"]: x for x in m["scenes"]}; SCN.update(sc)          # 책장 화면은 첫 화면과 이어 읽기 구간에서 같이 써서 구간은 따로 찾음
+RES = m["scenes"][1]
+feats_a = f"""<section class="feat rev"><div class="in">{ck_tx(RES)}<div class="vis r d1">{phone(S["s1_library"], "책장의 이어서 카드")}</div></div></section>"""
+feats_a += ck_feat("s3_translate", f"""<div class="phone tr"><img src="{S['s3_original']}" alt="중국어 원문" loading="lazy"><img class="b" src="{S['s3_translate']}" alt="한국어 번역과 원문" loading="lazy"></div>""", False)
+feats = ck_feat("s5_webtoon", f"""<div class="phone"><div class="scr"><img src="{WT}" alt="세로 스크롤 만화" id="wti"></div></div>""", True, "wt")
+feats += ck_feat("s6_mark", phone(S["s6_mark"], "형광펜 칠한 문단") + f'<img class="cardup" style="top:56%" src="{CK_MARK}" alt="형광펜 모아 보기" loading="lazy">', False)
+feats += ck_feat("s7_pdf", phone(S["s7_pdf"], "PDF 리더") + f'<img class="cardup" style="top:50%" src="{CK_TOC}" alt="PDF 목차" loading="lazy">', True)
+feats += ck_feat("s8_settings", phone(S["s8_settings"], "설정") + f'<img class="cardup pulse" style="top:35.5%" src="{CK_VOL}" alt="음량 버튼으로 쪽 넘기기 켜짐" loading="lazy">', False)
+faq = "".join(f"<details><summary>{e(q['q'])}</summary><p>{e(q['a'])}</p></details>" for q in m["faq"])
+rd, ts = sc["s2_reader"], sc["s4_tts"]
 body = f"""<header class="hero">{stars}<div class="in"><div class="r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><h1>{br(m['hero_title'])}</h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}
 <div class="hstats">{''.join(f'<div><b>{e(n)}</b><span>{e(l)}</span></div>' for n,l in m['stats'])}</div></div>
-<div class="stage r d1"><i class="glow"></i>{phone(S['library'], '책장')}{phone(S['reader'], '텍스트 리더')}</div></div></header>
+<div class="stage r d1"><i class="glow"></i>{phone(S['s1_library'], '책장')}{phone(S['s2_reader'], '텍스트 리더')}</div></div></header>
 <section class="page"><div class="in"><div class="r"><span class="k">{e(rd['kicker'])}</span><h2>{br(rd['title'])}</h2><p class="d">{e(rd['body'])}</p>
 <div class="ctl">가<input type="range" id="fs" min="15" max="24" value="18" aria-label="글자 크기"><b id="fv">18</b>가</div></div>
 <div class="paper r d1" id="pp"><div class="txt" id="tx">{paras}</div><div class="ft"><span>별빛 회랑 1권</span><span id="pg">34%</span></div></div></div></section>
+{feats_a}
 <section class="tts"><div class="in"><div class="read r" id="rd">{sents}<div class="bar"><span class="pl"><i></i><i></i></span><span class="wv">{'<i></i>' * 14}</span></div></div>
 <div class="r d1"><span class="k">{e(ts['kicker'])}</span><h2>{br(ts['title'])}</h2><p class="d">{e(ts['body'])}</p></div></div></section>
 {feats}
 <section class="why"><div class="in grid">{''.join(f'<div class="r d{i}"><h4>{e(w["title"])}</h4><p>{e(w["body"])}</p></div>' for i,w in enumerate(m['why']))}</div></section>
+<section class="faq"><div class="in"><h2>자주 묻는 질문</h2>{faq}</div></section>
 <section class="end r"><img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
 js = """const fs=document.getElementById('fs'),tx=document.getElementById('tx'),pp=document.getElementById('pp'),fv=document.getElementById('fv');
 const ps=[...tx.children];const fit=()=>{ps.forEach(x=>x.style.display='');const H=tx.clientHeight;let n=0;ps.forEach(x=>{if(x.offsetTop+x.offsetHeight>H)x.style.display='none';else n++});document.getElementById('pg').textContent=n+' / '+ps.length+' 문단';};const setF=v=>{tx.style.fontSize=v+'px';fv.textContent=v;fit();pp.classList.remove('flip');void pp.offsetWidth;pp.classList.add('flip')};addEventListener('resize',fit);fs.oninput=()=>setF(fs.value);setF(18);
