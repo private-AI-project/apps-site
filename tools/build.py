@@ -109,7 +109,7 @@ def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favico
 <script>document.addEventListener('DOMContentLoaded',()=>{{{REVEAL_JS}{js}}});{STORE_JS}</script></body></html>"""
 
 def app_meta(a):
-    cat = {"fairlypaid": "FinanceApplication", "lucky-bite": "EntertainmentApplication", "quiz-bite": "GameApplication", "officekit": "UtilitiesApplication", "maejeum": "LifestyleApplication", "reckoner": "SportsApplication", "floorlog": "UtilitiesApplication", "chaekkan": "BookApplication"}[a["slug"]]
+    cat = {"fairlypaid": "FinanceApplication", "lucky-bite": "EntertainmentApplication", "quiz-bite": "GameApplication", "officekit": "UtilitiesApplication", "maejeum": "LifestyleApplication", "reckoner": "SportsApplication", "floorlog": "UtilitiesApplication", "chaekkan": "BookApplication", "loary": "HealthApplication"}[a["slug"]]
     ld = {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": a["seo"]["store_name"], "alternateName": a["ko_name"], "operatingSystem": "iOS", "applicationCategory": cat,
           "description": a["seo"]["description"], "keywords": ", ".join(a["seo"]["keywords"]), "image": f"{BASE}/{a['slug']}/icon.png", "screenshot": [f"{BASE}/{a['slug']}/{a['shots'][h]}" for h in a["hero"]],
           "url": f"{BASE}/{a['slug']}/", "installUrl": a["store"], "publisher": {"@type": "Organization", "name": "Importants Studio", "url": BASE},
@@ -126,7 +126,7 @@ def write(a, css, body, js="", navcls=""):
     kw = f'<div class="in kw">{"".join(f"<span>{e(k)}</span>" for k in a["seo"]["keywords"])}</div>'
     open(f"{OUT}/{sl}/index.html", "w").write(page(f"/{sl}/", a["seo"]["title"], a["seo"]["description"], css, body + kw, js, app_meta(a), navcls, icon=f"/{sl}/icon.png", og=f"/{sl}/og.png"))
 
-TONE = {"fairlypaid": ("#ECF5CC", "#101114", "#3F5A0A"), "chaekkan": ("#0E1220", "#E9ECF5", "#F5B544"), "reckoner": ("#F1EEE7", "#141414", "#FF5B14"), "floorlog": ("#E3EDEB", "#1D2B2B", "#2C6A68"), "lucky-bite": ("#FFF1E6", "#2A1A10", "#FF7A3D"), "quiz-bite": ("#EAF0FF", "#1B2440", "#4F7CFF"), "officekit": ("#0F1424", "#FFFFFF", "#7EA0FF"), "maejeum": ("#EFECE5", "#2B2B2D", "#4A5C52")}
+TONE = {"fairlypaid": ("#ECF5CC", "#101114", "#3F5A0A"), "chaekkan": ("#0E1220", "#E9ECF5", "#F5B544"), "reckoner": ("#F1EEE7", "#141414", "#FF5B14"), "floorlog": ("#E3EDEB", "#1D2B2B", "#2C6A68"), "lucky-bite": ("#FFF1E6", "#2A1A10", "#FF7A3D"), "quiz-bite": ("#EAF0FF", "#1B2440", "#4F7CFF"), "officekit": ("#0F1424", "#FFFFFF", "#7EA0FF"), "maejeum": ("#EFECE5", "#2B2B2D", "#4A5C52"), "loary": ("#040B22", "#EEF0FF", "#B9B0FF")}
 
 # ───────────────────────── 뽑기 한입: 놀이형 ─────────────────────────
 a = A["lucky-bite"]; m = a["m"]; S = a["shots"]; sc = {x["screen"]: x for x in m["scenes"]}
@@ -572,6 +572,89 @@ const res=document.querySelector('.res');let last=-1;const calc0=calc;calc=()=>{
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 new IntersectionObserver((es,ob)=>{if(!es[0].isIntersecting)return;ob.disconnect();if(RM){calc();return}ch.value=0;calc();let h=0;const st=setInterval(()=>{if(!demo){clearInterval(st);return}h+=1;ch.value=h;calc();if(h>=20)clearInterval(st)},70)},{threshold:.5}).observe(document.getElementById('calc'));
 const earn=document.getElementById('earn');let ev=23220;if(!RM)setInterval(()=>{ev+=3;earn.textContent=ev.toLocaleString()},1050);calc();"""
+write(a, css, body, js)
+
+# ───────────────────────── 로아리: 밤하늘 모빌형 ─────────────────────────
+# 2026-11-16: 스토어 스크린샷(app/Loary/tools/store/compose.py 3차)과 같은 문장·같은 화면. 첫 화면 바탕은 스토어 헤더 모빌 영상(글자 없음).
+# 사장님 "최대한 섹션마다 애니메이션" → 첫 화면·기능 7개·안내·마무리 전부 움직임 하나씩. 글자·숫자는 앱 실제 문구·시연 값(측정 44dB)만.
+a = A["loary"]; m = a["m"]; S = a["shots"]; sc = {x["screen"]: x for x in m["scenes"]}
+for f in ("hero.mp4", "hero_poster.webp"): shutil.copy(f"raw/loary/{f}", f"{OUT}/loary/{f}")
+open(f"{OUT}/loary/config.json", "w").write(json.dumps(L("loary_config.json")) + "\n")  # 앱 원격 스위치(검은 화면 배너). docs 는 빌드마다 지워지므로 여기서 다시 씀
+def lo_hl(t, w): return br(t).replace(e(w), f"<em>{e(w)}</em>", 1) if w else br(t)
+LO_SOUNDS = ["엄마 뱃속", "심장 박동", "백색 소음", "핑크 소음", "브라운 소음", "빗소리", "선풍기", "포근한 바람"]   # 앱 소리 이름(ko Localizable)
+LO_FX = {
+ "s2_picker": '<div class="fx pick"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="rot">' + "".join(f'<b style="--i:{i}">{e(n)}</b>' for i, n in enumerate(LO_SOUNDS)) + '</span></div>',
+ "s3_night": '<div class="fx cry"><span class="ring"></span><span class="a">울음 감지</span><span class="b">다시 켰어요</span></div>',
+ "s4_volume": '<div class="fx db"><small>지금 소리 재기</small><span class="big"><span class="n" data-to="44">0</span>dB</span><span class="bar"><i></i><u></u></span><span class="lim">50dB</span></div>',
+ "s5_sleep": '<div class="dim"></div><div class="fx off"><span class="mo"></span>화면 끄기</div>',
+ "s6_mix": '<div class="fx mix"><span class="c1">심장 박동</span><span class="pl">+</span><span class="c2">빗소리</span></div>',
+ "s7_week": '<div class="fx wk"><small>일주일간 잠든 시간</small><span class="dots">' + "".join(f'<i style="--i:{i}">{d}</i>' for i, d in enumerate("월화수목금토일")) + '</span></div>',
+ "s8_tools": '<div class="fx tl">' + "".join(f'<span style="--i:{i}"><b>✓</b>{t}</span>' for i, t in enumerate(["수유등", "소음 측정", "녹음"])) + '</div>',
+}
+css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#ECEAFB;color:#101634}nav{background:rgba(4,11,34,.72);color:#EEF0FF}
+em{font-style:normal;color:#5848C8}.dark em{color:#B9B0FF}
+.btn.main,.btn.soon{background:#B9B0FF;color:#040B22;opacity:1}
+.hero{position:relative;background:#040B22;color:#EEF0FF;overflow:hidden;padding:clamp(40px,6vh,72px) 0 0}
+.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;pointer-events:none}.hero .poster{background:#040B22 center/cover no-repeat}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,11,34,.2),rgba(4,11,34,.75) 70%,#040B22);pointer-events:none}
+.hero .in{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:end}
+.chip{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:16px;background:rgba(255,255,255,.08);padding:6px 16px 6px 6px;border-radius:16px;backdrop-filter:blur(8px)}.chip img{width:36px;height:36px;border-radius:10px}
+.hero .k{display:block;font-size:clamp(17px,1.4vw,20px);color:#C8C4F0;font-weight:600;margin:28px 0 10px}
+.hero h1{font-size:clamp(40px,5.4vw,76px);line-height:1.14;letter-spacing:-.045em;font-weight:800;margin:0 0 20px}
+.hero p{font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:#AEB3D6;margin:0 0 32px;max-width:470px}.hero .tx{padding-bottom:clamp(64px,10vh,120px)}
+.hero .vis{position:relative;height:clamp(500px,64vh,640px);display:flex;justify-content:center}.hero .vis .phone{--w:clamp(240px,22vw,300px);position:absolute;top:30px}
+.hero .vis .phone{animation:lofl 7s ease-in-out infinite}@keyframes lofl{50%{transform:translateY(-14px)}}
+.hero .h1l{display:block;opacity:0;transform:translateY(24px);transition:opacity .9s,transform .9s cubic-bezier(.2,.7,.2,1)}.hero .on .h1l{opacity:1;transform:none}.hero .on .h1l+.h1l{transition-delay:.25s}
+.hero h1 em{background:linear-gradient(90deg,#B9B0FF,#EEF0FF,#B9B0FF) 0 0/200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:losh 5s linear infinite}@keyframes losh{to{background-position:-200% 0}}
+.feat{padding:clamp(56px,7vw,100px) 0}.feat .in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px);align-items:center}.feat.rev .tx{order:2}.feat .tx{max-width:470px;justify-self:end}.feat.rev .tx{justify-self:start}
+.feat .k{font-size:clamp(16px,1.3vw,19px);color:#606484;font-weight:600;margin:0 0 12px;display:block}.feat h3{font-size:clamp(30px,3.4vw,46px);line-height:1.2;letter-spacing:-.045em;font-weight:800;margin:0}
+.pro{display:inline-block;font-size:13px;font-weight:800;color:#fff;background:#5848C8;border-radius:8px;padding:3px 9px;margin-bottom:14px}
+.feat .vis{position:relative;display:flex;justify-content:center;background:#fff;border-radius:36px;padding:clamp(32px,4vw,56px) 0 0;overflow:hidden;height:clamp(440px,46vw,620px)}.feat .phone{--w:clamp(230px,22vw,300px);box-shadow:0 24px 60px rgba(16,22,52,.18)}
+.feat:nth-of-type(odd) .vis{background:#E1DEF8}
+.fx{position:absolute;z-index:3;background:#fff;color:#101634;border-radius:18px;padding:12px 16px;box-shadow:0 18px 44px rgba(16,22,52,.18);font-size:15px;font-weight:700;white-space:nowrap;transition:transform .9s cubic-bezier(.34,1.5,.5,1) .5s,opacity .6s .5s;animation:none}
+.vis:not(.on) .fx{opacity:0;transform:translateY(24px) scale(.92)}.fx small{display:block;font-size:12px;color:#8A8FAE;font-weight:600;margin-bottom:3px}.fx .big{font-size:26px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+/* 소리 고르기: 이름이 차례로 바뀌고 이퀄라이저가 움직임 */
+.fx.pick{left:4%;bottom:20%;display:flex;align-items:center;gap:12px;padding:14px 18px}.eq{display:flex;gap:3px;align-items:flex-end;height:20px}.eq i{width:4px;border-radius:2px;background:#5848C8;animation:loeq 1s ease-in-out infinite}.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}.eq i:nth-child(4){animation-delay:.1s}@keyframes loeq{0%,100%{height:5px}50%{height:20px}}
+.rot{position:relative;display:inline-block;width:6.2em;height:1.3em}.rot b{position:absolute;left:0;top:0;opacity:0;animation:lorot 16s infinite;animation-delay:calc(var(--i)*2s)}@keyframes lorot{0%{opacity:0;transform:translateY(8px)}3%,11%{opacity:1;transform:none}14%,100%{opacity:0;transform:translateY(-8px)}}
+/* 울음 감지 → 다시 켰어요 */
+.fx.cry{right:4%;top:42%;padding:14px 20px 14px 46px;min-width:150px}.fx.cry .ring{position:absolute;left:18px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#E5484D}.fx.cry .ring:after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #E5484D;animation:lopu 1.6s ease-out infinite}@keyframes lopu{to{transform:scale(2.6);opacity:0}}
+.fx.cry .a,.fx.cry .b{display:block;animation:locry 6s infinite}.fx.cry .b{position:absolute;left:46px;top:14px;color:#5848C8;opacity:0;animation-name:locry2}.fx.cry .ring{animation:locol 6s infinite}@keyframes locry{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}@keyframes locry2{0%,45%{opacity:0}50%,95%{opacity:1}100%{opacity:0}}@keyframes locol{0%,45%{background:#E5484D}50%,95%{background:#5848C8}}
+/* 소리 크기: 0 → 44dB, 50dB 선 */
+.fx.db{left:6%;bottom:16%;width:220px;padding:16px 20px}.fx.db .bar{position:relative;display:block;height:8px;border-radius:4px;background:#ECEAFB;margin-top:10px}.fx.db .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:#5848C8;width:0;transition:width 1.6s cubic-bezier(.2,.7,.2,1) .9s}.vis.on .fx.db .bar i{width:44%}.fx.db .bar u{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:#101634}.fx.db .lim{position:absolute;right:20px;bottom:30px;font-size:11px;color:#8A8FAE}
+/* 검은 화면: 화면이 천천히 어두워짐 */
+.dim{position:absolute;z-index:2;left:50%;top:clamp(32px,4vw,56px);width:var(--w);transform:translateX(-50%);aspect-ratio:1320/2868;border-radius:calc(var(--w)*.16);background:#000;opacity:0;pointer-events:none;--w:clamp(230px,22vw,300px)}.vis.on .dim{animation:lodim 7s ease-in-out 1s infinite}@keyframes lodim{0%,15%{opacity:0}45%,80%{opacity:.82}100%{opacity:0}}
+.fx.off{left:50%;bottom:10%;transform:translateX(-50%);background:#0E1E4A;color:#EEF0FF;display:flex;align-items:center;gap:10px}.vis:not(.on) .fx.off{transform:translate(-50%,24px)}.mo{width:16px;height:16px;border-radius:50%;box-shadow:inset -5px -2px 0 0 #B9B0FF;animation:lomo 7s ease-in-out infinite}@keyframes lomo{50%{transform:rotate(-25deg)}}
+/* 섞기: 두 소리가 다가와 붙음 */
+.fx.mix{left:50%;bottom:14%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:transparent;box-shadow:none;padding:0}.vis:not(.on) .fx.mix{transform:translate(-50%,24px)}.fx.mix span{background:#fff;border-radius:999px;padding:10px 16px;box-shadow:0 12px 30px rgba(16,22,52,.16)}.fx.mix .pl{background:#5848C8;color:#fff;padding:6px 11px}.fx.mix .c1{animation:lomx1 6s ease-in-out infinite}.fx.mix .c2{animation:lomx2 6s ease-in-out infinite}.fx.mix .pl{animation:lomxp 6s ease-in-out infinite}
+@keyframes lomx1{0%,15%{transform:translateX(-40px);opacity:.4}40%,85%{transform:none;opacity:1}100%{transform:translateX(-40px);opacity:.4}}@keyframes lomx2{0%,15%{transform:translateX(40px);opacity:.4}40%,85%{transform:none;opacity:1}100%{transform:translateX(40px);opacity:.4}}@keyframes lomxp{0%,30%{transform:scale(0)}45%,85%{transform:scale(1)}100%{transform:scale(0)}}
+/* 일주일: 요일이 차례로 켜짐 */
+.fx.wk{right:6%;bottom:14%;padding:14px 18px}.fx.wk .dots{display:flex;gap:6px}.fx.wk i{font-style:normal;width:26px;height:26px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:12px;background:#ECEAFB;color:#8A8FAE;animation:lowk 7s infinite;animation-delay:calc(var(--i)*.35s)}@keyframes lowk{0%,5%{background:#ECEAFB;color:#8A8FAE}12%,80%{background:#5848C8;color:#fff}90%,100%{background:#ECEAFB;color:#8A8FAE}}
+/* 도구: 하나씩 체크 */
+.fx.tl{left:6%;top:18%;display:flex;flex-direction:column;gap:8px;background:transparent;box-shadow:none;padding:0}.fx.tl span{background:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 12px 30px rgba(16,22,52,.14);display:flex;align-items:center;gap:8px;animation:lotl 6s infinite;animation-delay:calc(var(--i)*.5s)}.fx.tl b{width:20px;height:20px;border-radius:10px;background:#ECEAFB;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;animation:lotlb 6s infinite;animation-delay:calc(var(--i)*.5s)}
+@keyframes lotl{0%{opacity:0;transform:translateX(-16px)}8%,85%{opacity:1;transform:none}100%{opacity:0}}@keyframes lotlb{0%,15%{background:#ECEAFB}25%,100%{background:#5848C8}}
+/* 안내 카드: 달이 숨 쉬듯 빛남 */
+.note{padding:clamp(56px,8vw,100px) 0}.note .card{max-width:760px;margin:0 auto;background:#fff;border-radius:28px;padding:clamp(28px,4vw,44px);display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start}
+.note .moon{width:40px;height:40px;border-radius:50%;box-shadow:inset -10px -4px 0 0 #5848C8;animation:loglow 4s ease-in-out infinite}@keyframes loglow{50%{filter:drop-shadow(0 0 12px rgba(88,72,200,.6))}}.note h3{margin:0 0 8px;font-size:20px;font-weight:800}.note p{margin:0;line-height:1.7;color:#4A4F70}
+/* 마무리: 별이 반짝이고 아이콘이 흔들림 */
+.end{position:relative;overflow:hidden;text-align:center;padding:clamp(90px,11vw,140px) 24px;background:#040B22;color:#EEF0FF}.end img{position:relative;width:96px;height:96px;border-radius:24px;margin:0 auto 26px;transition:transform 1s cubic-bezier(.34,1.6,.5,1) .2s}.end:not(.on) img{transform:scale(.6) rotate(-12deg)}.end.on img{animation:lobob 4s ease-in-out 1.4s infinite}@keyframes lobob{50%{transform:translateY(-8px) rotate(-3deg)}}
+.end h2{position:relative;font-size:clamp(30px,4.2vw,50px);font-weight:800;letter-spacing:-.045em;margin:0 0 30px}.end small{position:relative;display:block;margin-top:20px;opacity:.6}.end small a{text-decoration:underline}.end .btn{position:relative}
+.st{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:lotw 3s ease-in-out infinite}@keyframes lotw{0%,100%{opacity:.15}50%{opacity:.9}}
+@media(max-width:900px){.hero .in,.feat .in{grid-template-columns:minmax(0,1fr)}.hero .tx{padding-bottom:0}.hero .vis{height:520px}.hero .vis .phone{--w:230px}.feat.rev .tx{order:0}.feat .tx,.feat.rev .tx{justify-self:start}.feat .vis{height:460px}.feat .phone,.dim{--w:240px}.fx{font-size:13px}.fx.pick,.fx.tl,.fx.db{left:3%}.fx.cry,.fx.wk{right:3%}.fx.wk i{width:22px;height:22px}}
+@media(prefers-reduced-motion:reduce){.hero video{display:none}}"""
+def lo_feat(i, k):
+    x = sc[k]; rev = " rev" if i % 2 else ""
+    return f"""<section class="feat{rev}"><div class="in"><div class="tx r">{'<span class="pro">Pro</span>' if x.get('pro') else ''}<span class="k">{e(x['kicker'])}</span><h3>{lo_hl(x['title'], x.get('hl'))}</h3></div><div class="vis r d1">{phone(S[k], x['kicker'])}{LO_FX[k]}</div></div></section>"""
+import random; random.seed(7)
+stars = "".join(f'<i class="st" style="left:{random.uniform(2,98):.1f}%;top:{random.uniform(4,96):.1f}%;animation-delay:{random.uniform(0,3):.2f}s"></i>' for _ in range(40))
+t1, t2 = (y.strip() for y in m["hero_title"].split("/"))
+body = f"""<header class="hero dark"><div class="poster" style="background-image:url(hero_poster.webp)"></div><video src="hero.mp4" poster="hero_poster.webp" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+<div class="in"><div class="tx r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><span class="k">{e(m['hero_kicker'])}</span><h1><span class="h1l">{e(t1)}</span><span class="h1l">{lo_hl(t2, m['hero_hl'])}</span></h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}</div>
+<div class="vis r d1">{phone(S['s1_home'], '홈 화면')}</div></div></header>
+{''.join(lo_feat(i, k) for i, k in enumerate(x['screen'] for x in m['scenes']))}
+<section class="note"><div class="in"><div class="card r"><span class="moon"></span><div><h3>{e(m['note_title'])}</h3><p>{e(m['note'])}</p></div></div></div></section>
+<section class="end dark r">{stars}<img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
+js = """const lv=document.querySelectorAll('.feat .vis');const lo=new IntersectionObserver(es=>es.forEach(x=>{if(!x.isIntersecting)return;lo.unobserve(x.target);x.target.classList.add('on');const n=x.target.querySelector('.n');if(n){const to=+n.dataset.to,t0=performance.now()+900,f=t=>{const p=Math.max(0,Math.min(1,(t-t0)/1600));n.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}}),{threshold:.3});lv.forEach(v=>lo.observe(v));
+const hv=document.querySelector('.hero video');if(hv&&matchMedia('(prefers-reduced-motion: reduce)').matches)hv.pause();"""
 write(a, css, body, js)
 
 # ───────────────────────── 메인(스튜디오) ─────────────────────────

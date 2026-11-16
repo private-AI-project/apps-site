@@ -140,5 +140,20 @@
    "timesheet",
    "widgets"
   ]
+ },
+ {
+  "slug": "loary",
+  "id": "6835028989",
+  "released": false,
+  "privacy": "https://importants-studio.com/privacy/loary/",
+  "color": "#141A3A",
+  "raw_dir": "raw/loary",
+  "ko_name": "로아리",
+  "icon": "../app/Loary/Resources/Assets.xcassets/AppIcon.appiconset/icon.png",
+  "hero": [
+   "s1_home",
+   "s5_sleep"
+  ],
+  "extra_shots": []
  }
 ]
