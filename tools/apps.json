@@ -155,5 +155,22 @@
    "s5_sleep"
   ],
   "extra_shots": []
+ },
+ {
+  "slug": "afterimage",
+  "id": "6779294228",
+  "released": true,
+  "privacy": "https://importants-studio.com/privacy/afterimage/",
+  "color": "#1C273A",
+  "raw_dir": "raw/afterimage",
+  "ko_name": "잔상",
+  "icon": "../app/Afterimage/assets/brand/AppIcon-light-1024.png",
+  "hero": [
+   "s1_pending",
+   "s1_fan"
+  ],
+  "extra_shots": [
+   "widget"
+  ]
  }
 ]
