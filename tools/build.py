@@ -659,9 +659,11 @@ write(a, css, body, js)
 
 # ───────────────────────── 잔상: 현상(흐림 → 선명)형 ─────────────────────────
 # 2026-11-17: 스토어 1.4.0 스크린샷과 같은 문장·같은 화면. 첫 화면 바탕은 스토어 헤더 배너 영상(글자 없음).
-# 컨셉 = 사진이 현상되듯 글자·화면이 흐림에서 선명해짐(한 번만, 반복 잔상 없음). 구간마다 움직임 하나, 글자는 앱 실제 문구만.
+# 사장님 2026-11-17: 흐림(잔상) 효과는 글자에만, 이미지·카드는 흐림 없이. 헤더는 레퍼런스(1 Second Everyday·Day One·Retro·Timehop) 따라
+# 밝은 바탕 가운데 정렬 명조 제목 + 가운데 폰 + 주변에 앱 샘플 사진 폴라로이드(날짜·'1년 전 오늘')가 천천히 떠다님. 배경 영상 없음.
 a = A["afterimage"]; m = a["m"]; S = a["shots"]; sc = {x["screen"]: x for x in m["scenes"]}
-for f in ("hero.mp4", "hero_poster.webp"): shutil.copy(f"raw/afterimage/{f}", f"{OUT}/afterimage/{f}")
+AI_POL = [(0, "2026.11.08", -7, "l1"), (1, "2026.11.02", 5, "l2"), (3, "2026.10.22", -4, "l3"), (5, "1년 전 오늘", 6, "r1"), (9, "2026.04.03", -5, "r2"), (13, "2025.12.24", 4, "r3")]   # 앱 샘플 사진(StoreSamples, Pexels)
+for n, *_ in AI_POL: save(f"raw/afterimage/p{n}.jpg", f"{OUT}/afterimage/p{n}.webp", 480)
 def ai_hl(t, w): return br(t).replace(e(w), f"<em>{e(w)}</em>", 1) if w else br(t)
 AI_Q = ["오늘 먹은 음식은 무엇인가요?", "지금 손에 들고 있는 건 무엇인가요?", "창밖 풍경은 어떤 모습인가요?", "지금 마시는 음료는 무엇인가요?"]   # Services/Prompts.swift
 AI_P = ["내일", "일주일", "한 달", "1년", "3년", "5년"]                                                                       # 기간 이름(앱)
@@ -678,28 +680,31 @@ AI_FX = {
 css = "@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&display=swap');" + PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#E6EBF1;color:#1C273A}nav{background:rgba(28,39,58,.72);color:#EEF2F8}
 h1,h2,h3{font-family:"Nanum Myeongjo",serif}em{font-style:normal;color:#3D6FAE}.dark em{color:#8CB4E6}
 .btn.main,.btn.soon{background:#8CB4E6;color:#1C273A;opacity:1}
-/* 현상: 흐림 → 선명(한 번) */
-.r{opacity:0;filter:blur(14px);transform:none;transition:opacity 1.2s ease,filter 1.4s ease}.r.on{opacity:1;filter:blur(0)}
-.vis .phone img{filter:blur(18px);transition:filter 1.8s ease .3s}.vis.on .phone img{filter:blur(0)}
-.hero{position:relative;background:#1C273A;color:#EEF2F8;overflow:hidden;padding:clamp(40px,6vh,72px) 0 0}
-.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45;pointer-events:none}.hero .poster{background:#1C273A center/cover no-repeat}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,39,58,.25),rgba(28,39,58,.8) 70%,#1C273A);pointer-events:none}
-.hero .in{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:end}
-.chip{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:16px;background:rgba(255,255,255,.08);padding:6px 16px 6px 6px;border-radius:16px;backdrop-filter:blur(8px)}.chip img{width:36px;height:36px;border-radius:10px}
-.hero .k{display:block;font-size:clamp(17px,1.4vw,20px);color:#A8B8CE;font-weight:600;margin:28px 0 10px}
-.hero h1{font-size:clamp(40px,5.4vw,76px);line-height:1.18;letter-spacing:-.03em;font-weight:800;margin:0 0 20px}
-.hero p{font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:#A8B8CE;margin:0 0 32px;max-width:470px}.hero .tx{padding-bottom:clamp(64px,10vh,120px)}
-.hero .vis{position:relative;height:clamp(500px,64vh,640px);display:flex;justify-content:center}.hero .vis .phone{--w:clamp(240px,22vw,300px);position:absolute;top:30px;animation:aifl 8s ease-in-out infinite}@keyframes aifl{50%{transform:translateY(-12px)}}
-.hero .h1l{display:block;opacity:0;filter:blur(16px);transition:opacity 1.3s,filter 1.5s}.hero .on .h1l{opacity:1;filter:blur(0)}.hero .on .h1l+.h1l{transition-delay:.45s}
+/* 글자만 현상(흐림 → 선명, 한 번). 이미지·카드는 흐림 없이 살짝 떠오름 */
+.tx.r,.end.r h2{opacity:0;filter:blur(12px);transform:none;transition:opacity 1.2s ease,filter 1.4s ease}.tx.r.on,.end.r.on h2{opacity:1;filter:blur(0)}.end.r{opacity:1;transform:none}
+.feat .vis{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}.feat .vis.on{opacity:1;transform:none}
+.hero{position:relative;background:#E6EBF1;color:#1C273A;overflow:hidden;text-align:center;padding:clamp(56px,9vh,96px) 0 0}
+.hero .tx{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:0 20px}
+.chip{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:16px;background:#fff;padding:6px 16px 6px 6px;border-radius:16px;box-shadow:0 6px 18px rgba(28,39,58,.08)}.chip img{width:34px;height:34px;border-radius:9px}
+.hero .k{display:block;font-size:clamp(17px,1.4vw,20px);color:#5E6B80;font-weight:600;margin:26px 0 10px}
+.hero h1{font-size:clamp(42px,6vw,84px);line-height:1.15;letter-spacing:-.03em;font-weight:800;margin:0 0 18px}
+.hero p{font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:#5E6B80;margin:0 auto 30px;max-width:520px}
+.hero .h1l{display:inline;opacity:0;filter:blur(14px);transition:opacity 1.3s,filter 1.5s}.hero .on .h1l{opacity:1;filter:blur(0)}.hero .on .h1l+.h1l{transition-delay:.45s}.hero h1 br{display:block}
+.stage{position:relative;height:clamp(520px,58vw,700px);margin-top:clamp(40px,6vh,64px);max-width:1200px;margin-left:auto;margin-right:auto}
+.stage .phone{--w:clamp(250px,22vw,310px);position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:2;box-shadow:0 40px 90px rgba(28,39,58,.25)}
+.pol{position:absolute;z-index:1;width:clamp(130px,13vw,190px);background:#fff;padding:8px 8px 0;border-radius:4px;box-shadow:0 18px 40px rgba(28,39,58,.18);transform:rotate(var(--r));animation:aipf 9s ease-in-out infinite;animation-delay:var(--d)}
+.pol img{width:100%;aspect-ratio:1;object-fit:cover}.pol span{display:block;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.06em;color:#5E6B80;padding:9px 2px 11px;text-align:left}.pol span.t{color:#3D6FAE;font-family:inherit;font-weight:700;letter-spacing:0}
+@keyframes aipf{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(var(--r)) translateY(-14px)}}
+.pol.l1{left:4%;top:4%}.pol.l2{left:15%;top:42%}.pol.l3{left:1%;top:70%}.pol.r1{right:6%;top:2%}.pol.r2{right:16%;top:40%}.pol.r3{right:2%;top:68%}
 .feat{padding:clamp(56px,7vw,100px) 0}.feat .in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px);align-items:center}.feat.rev .tx{order:2}.feat .tx{max-width:480px;justify-self:end}.feat.rev .tx{justify-self:start}
 .feat .k{font-size:clamp(16px,1.3vw,19px);color:#5E6B80;font-weight:600;margin:0 0 12px;display:block}.feat h3{font-size:clamp(28px,3.2vw,44px);line-height:1.3;letter-spacing:-.03em;font-weight:800;margin:0}
 .pro{display:inline-block;font-size:13px;font-weight:800;color:#fff;background:#3D6FAE;border-radius:8px;padding:3px 9px;margin-bottom:14px}
 .feat .vis{position:relative;display:flex;justify-content:center;background:#fff;border-radius:36px;padding:clamp(32px,4vw,56px) 0 0;overflow:hidden;height:clamp(440px,46vw,620px)}.feat .phone{--w:clamp(230px,22vw,300px);box-shadow:0 24px 60px rgba(28,39,58,.18)}
 .feat:nth-of-type(odd) .vis{background:#D3DBE5}
-.fx{position:absolute;z-index:3;background:#fff;color:#1C273A;border-radius:18px;padding:12px 16px;box-shadow:0 18px 44px rgba(28,39,58,.18);font-size:15px;font-weight:700;white-space:nowrap;transition:opacity 1.2s ease 1.2s,filter 1.4s ease 1.2s;animation:none}
-.vis:not(.on) .fx{opacity:0;filter:blur(10px)}.fx small{display:block;font-size:12px;color:#8592A6;font-weight:600;margin-bottom:3px}.fx .big{font-size:26px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.fx{position:absolute;z-index:3;background:#fff;color:#1C273A;border-radius:18px;padding:12px 16px;box-shadow:0 18px 44px rgba(28,39,58,.18);font-size:15px;font-weight:700;white-space:nowrap;transition:opacity .8s ease 1s,translate .8s cubic-bezier(.2,.7,.2,1) 1s;animation:none}
+.vis:not(.on) .fx{opacity:0;translate:0 16px}.fx small{display:block;font-size:12px;color:#8592A6;font-weight:600;margin-bottom:3px}.fx .big{font-size:26px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 /* 오늘의 질문: 질문이 흐려졌다 선명해지며 바뀜 */
-.fx.q{left:4%;bottom:18%;padding:14px 18px}.rot{position:relative;display:block;width:15em;height:1.35em}.rot b{position:absolute;left:0;top:0;opacity:0;animation:airot 14s infinite;animation-delay:calc(var(--i)*3.5s)}@keyframes airot{0%{opacity:0;filter:blur(6px)}4%,22%{opacity:1;filter:blur(0)}27%,100%{opacity:0;filter:blur(6px)}}
+.fx.q{left:4%;bottom:18%;padding:14px 18px}.rot{position:relative;display:block;width:15em;height:1.35em}.rot b{position:absolute;left:0;top:0;opacity:0;animation:airot 14s infinite;animation-delay:calc(var(--i)*3.5s)}@keyframes airot{0%{opacity:0;transform:translateY(8px)}3%,20%{opacity:1;transform:none}24%,100%{opacity:0;transform:translateY(-8px)}}
 /* 기간: 내일 → 5년 차례로 켜짐 */
 .fx.per{left:50%;bottom:9%;transform:translateX(-50%);display:flex;gap:6px;padding:8px}.fx.per span{padding:8px 11px;border-radius:12px;font-size:14px;color:#8592A6;animation:aiper 9s infinite;animation-delay:calc(var(--i)*1.2s)}@keyframes aiper{0%,2%{background:transparent;color:#8592A6}6%,14%{background:#1C273A;color:#fff}20%,100%{background:transparent;color:#8592A6}}
 /* 위젯: 홈 화면 위젯이 떠오름 */
@@ -709,31 +714,31 @@ h1,h2,h3{font-family:"Nanum Myeongjo",serif}em{font-style:normal;color:#3D6FAE}.
 /* 일기: 깜빡이는 입력 막대 */
 .fx.dy{right:5%;bottom:16%;padding:14px 18px;font-weight:600}.cr{display:inline-block;width:2px;height:1.05em;margin-left:3px;vertical-align:-3px;background:#3D6FAE;animation:aicr 1s steps(1) infinite}@keyframes aicr{50%{opacity:0}}
 /* 같은 날: 1년 전 → 2년 전 */
-.fx.yr{left:5%;top:30%;display:flex;flex-direction:column;gap:8px;background:transparent;box-shadow:none;padding:0}.fx.yr span{background:#fff;border-radius:999px;padding:10px 16px;box-shadow:0 12px 30px rgba(28,39,58,.16)}.fx.yr .y1{animation:aiy 7s infinite}.fx.yr .y2{animation:aiy 7s 1.4s infinite}@keyframes aiy{0%{opacity:0;filter:blur(6px)}10%,75%{opacity:1;filter:blur(0)}90%,100%{opacity:0;filter:blur(6px)}}
+.fx.yr{left:5%;top:30%;display:flex;flex-direction:column;gap:8px;background:transparent;box-shadow:none;padding:0}.fx.yr span{background:#fff;border-radius:999px;padding:10px 16px;box-shadow:0 12px 30px rgba(28,39,58,.16)}.fx.yr .y1{animation:aiy 7s infinite}.fx.yr .y2{animation:aiy 7s 1.4s infinite}@keyframes aiy{0%{opacity:0;transform:translateX(-12px)}10%,75%{opacity:1;transform:none}90%,100%{opacity:0;transform:translateX(-12px)}}
 /* 필름 한 통: 0 → 5/24장 */
 .fx.rl{right:5%;bottom:14%;width:220px;padding:16px 20px}.fx.rl .bar{display:block;height:8px;border-radius:4px;background:#E6EBF1;margin-top:10px;overflow:hidden}.fx.rl .bar i{display:block;height:100%;width:0;background:#C2603F;transition:width 1.6s cubic-bezier(.2,.7,.2,1) 1.4s}.vis.on .fx.rl .bar i{width:20.8%}
 /* 보관: 하나씩 체크 */
 .fx.ck{left:5%;top:22%;display:flex;flex-direction:column;gap:8px;background:transparent;box-shadow:none;padding:0}.fx.ck span{background:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 12px 30px rgba(28,39,58,.14);display:flex;align-items:center;gap:8px;animation:aick 7s infinite;animation-delay:calc(var(--i)*.6s)}.fx.ck b{width:20px;height:20px;border-radius:10px;background:#E6EBF1;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;animation:aickb 7s infinite;animation-delay:calc(var(--i)*.6s)}
-@keyframes aick{0%{opacity:0;filter:blur(6px)}8%,85%{opacity:1;filter:blur(0)}100%{opacity:0}}@keyframes aickb{0%,15%{background:#E6EBF1}25%,100%{background:#3D6FAE}}
+@keyframes aick{0%{opacity:0;transform:translateX(-16px)}8%,85%{opacity:1;transform:none}100%{opacity:0}}@keyframes aickb{0%,15%{background:#E6EBF1}25%,100%{background:#3D6FAE}}
 .note{padding:clamp(56px,8vw,100px) 0}.note .card{max-width:760px;margin:0 auto;background:#fff;border-radius:28px;padding:clamp(28px,4vw,44px);display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start}
-.note .pol{width:38px;height:44px;background:#fff;border:1px solid #D3DBE5;border-radius:3px;padding:4px 4px 10px;box-shadow:0 6px 14px rgba(28,39,58,.12)}.note .pol i{display:block;width:100%;height:100%;background:#8CB4E6;animation:aipol 5s ease-in-out infinite}@keyframes aipol{0%,100%{filter:blur(4px);opacity:.5}50%{filter:blur(0);opacity:1}}
+.note .ico{width:38px;height:44px;background:#fff;border:1px solid #D3DBE5;border-radius:3px;padding:4px 4px 10px;box-shadow:0 6px 14px rgba(28,39,58,.12)}.note .ico i{display:block;width:100%;height:100%;background:#8CB4E6}
 .note h3{margin:0 0 8px;font-size:20px;font-weight:800}.note p{margin:0;line-height:1.7;color:#4A5568}
 .end{position:relative;overflow:hidden;text-align:center;padding:clamp(90px,11vw,140px) 24px;background:#1C273A;color:#EEF2F8}.end img{position:relative;width:96px;height:96px;border-radius:24px;margin:0 auto 26px}
 .end h2{position:relative;font-size:clamp(30px,4.2vw,50px);font-weight:800;letter-spacing:-.03em;margin:0 0 30px}.end small{position:relative;display:block;margin-top:20px;opacity:.6}.end small a{text-decoration:underline}.end .btn{position:relative}
-@media(max-width:900px){.hero .in,.feat .in{grid-template-columns:minmax(0,1fr)}.hero .tx{padding-bottom:0}.hero .vis{height:520px}.hero .vis .phone{--w:230px}.feat.rev .tx{order:0}.feat .tx,.feat.rev .tx{justify-self:start}.feat .vis{height:460px}.feat .phone{--w:240px}.fx{font-size:13px}.fx.q,.fx.yr,.fx.ck{left:3%}.fx.dy,.fx.rl{right:3%}.rot{width:13em}.fx.per span{padding:6px 8px;font-size:12px}}
-@media(prefers-reduced-motion:reduce){.hero video{display:none}.r,.hero .h1l,.vis .phone img,.fx{filter:none!important;opacity:1!important}}"""
+@media(max-width:900px){.feat .in{grid-template-columns:minmax(0,1fr)}.stage{height:560px}.stage .phone{--w:230px}.pol{width:112px;padding:6px 6px 0}.pol span{font-size:10px;padding:6px 1px 8px}.pol.l1{left:-4%;top:2%}.pol.l2{left:-6%;top:44%}.pol.l3{display:none}.pol.r1{right:-1%;top:8%}.pol.r2{right:-6%;top:52%}.pol.r3{display:none}.feat.rev .tx{order:0}.feat .tx,.feat.rev .tx{justify-self:start}.feat .vis{height:460px}.feat .phone{--w:240px}.fx{font-size:13px}.fx.q,.fx.yr,.fx.ck{left:3%}.fx.dy,.fx.rl{right:3%}.rot{width:13em}.fx.per span{padding:6px 8px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.tx.r,.end.r h2,.hero .h1l,.feat .vis,.fx{filter:none!important;opacity:1!important;transform:none!important}}"""
 def ai_feat(i, k):
     x = sc[k]; rev = " rev" if i % 2 else ""
     return f"""<section class="feat{rev}"><div class="in"><div class="tx r">{'<span class="pro">Pro</span>' if x.get('pro') else ''}<span class="k">{e(x['kicker'])}</span><h3>{ai_hl(x['title'], x.get('hl'))}</h3></div><div class="vis">{phone(S[k], x['kicker'])}{AI_FX[k]}</div></div></section>"""
 t1, t2 = (y.strip() for y in m["hero_title"].split("/"))
-body = f"""<header class="hero dark"><div class="poster" style="background-image:url(hero_poster.webp)"></div><video src="hero.mp4" poster="hero_poster.webp" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
-<div class="in"><div class="tx r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><span class="k">{e(m['hero_kicker'])}</span><h1><span class="h1l">{e(t1)}</span><span class="h1l">{ai_hl(t2, m['hero_hl'])}</span></h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}</div>
-<div class="vis">{phone(S['s1_pending'], '대기 화면')}</div></div></header>
+pols = "".join(f'<figure class="pol {c}" style="--r:{r}deg;--d:{-i*1.4:.1f}s"><img src="p{n}.webp" alt="" loading="lazy"><span class="{'t' if not lab[0].isdigit() else ''}">{e(lab)}</span></figure>' for i, (n, lab, r, c) in enumerate(AI_POL))
+body = f"""<header class="hero"><div class="tx r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><span class="k">{e(m['hero_kicker'])}</span><h1><span class="h1l">{e(t1)}</span><br><span class="h1l">{ai_hl(t2, m['hero_hl'])}</span></h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}</div>
+<div class="stage">{pols}{phone(S['s1_pending'], '대기 화면')}</div></header>
 {''.join(ai_feat(i, k) for i, k in enumerate(x['screen'] for x in m['scenes']))}
-<section class="note"><div class="in"><div class="card r"><span class="pol"><i></i></span><div><h3>{e(m['note_title'])}</h3><p>{e(m['note'])}</p></div></div></div></section>
+<section class="note"><div class="in"><div class="card r"><span class="ico"><i></i></span><div><h3>{e(m['note_title'])}</h3><p>{e(m['note'])}</p></div></div></div></section>
 <section class="end dark r"><img src="icon.png" alt=""><h2>{e(m['cta'])}</h2>{store_btn(a)}<small><a href="{e(a['privacy'])}">{e(C['LINK_PRIVACY'])}</a></small></section>"""
-js = """const av=document.querySelectorAll('.vis');const ao=new IntersectionObserver(es=>es.forEach(x=>{if(!x.isIntersecting)return;ao.unobserve(x.target);x.target.classList.add('on');const n=x.target.querySelector('.n');if(n){const to=+n.dataset.to,t0=performance.now()+1400,f=t=>{const p=Math.max(0,Math.min(1,(t-t0)/1600));n.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}}),{threshold:.3});av.forEach(v=>ao.observe(v));
-const hv=document.querySelector('.hero video');if(hv&&matchMedia('(prefers-reduced-motion: reduce)').matches)hv.pause();"""
+js = """const av=document.querySelectorAll('.feat .vis');const ao=new IntersectionObserver(es=>es.forEach(x=>{if(!x.isIntersecting)return;ao.unobserve(x.target);x.target.classList.add('on');const n=x.target.querySelector('.n');if(n){const to=+n.dataset.to,t0=performance.now()+1400,f=t=>{const p=Math.max(0,Math.min(1,(t-t0)/1600));n.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}}),{threshold:.3});av.forEach(v=>ao.observe(v));
+"""
 write(a, css, body, js)
 
 # ───────────────────────── 메인(스튜디오) ─────────────────────────
