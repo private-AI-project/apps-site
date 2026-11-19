@@ -9,12 +9,16 @@
 import json, time, os, html, shutil, urllib.request, datetime
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
-BASE = "https://apps.importants-studio.com"; MAIL = "contact@importants-studio.com"
+# 2026-11-19 importants-app.com 으로 이사. TARGET=new(기본) → dist-app/(Cloudflare Pages importants-app),
+# TARGET=old → docs/(GitHub Pages apps.importants-studio.com, 검색 제외 noindex — 로아리 앱이 /loary/config.json 을 읽으므로 계속 띄움)
+TARGET = os.environ.get("TARGET", "new")
+OLD = TARGET == "old"
+BASE = "https://apps.importants-studio.com" if OLD else "https://importants-app.com"; MAIL = "contact@importants-studio.com"
 L = lambda f: json.load(open(f"tools/{f}"))
 C, M, APPS = L("site_copy.json"), L("marketing.json"), L("apps.json")
 SEO, VERIFY = L("seo.json"), L("verify.json")  # 검색 노출: 앱스토어 이름·키워드·설명(로컬 LLM), 검색엔진 소유 확인 코드
 QUIZ, GAMES, TOOLS = L("quiz_demo.json"), L("lucky_games.json"), L("office_tools.json")
-OUT = "docs"; shutil.rmtree(OUT, ignore_errors=True); os.makedirs(OUT)
+OUT = "docs" if OLD else "dist-app"; shutil.rmtree(OUT, ignore_errors=True); os.makedirs(OUT)
 e = lambda s: html.escape(str(s or ""), quote=True)
 br = lambda s: "<br>".join(e(x.strip()) for x in (s or "").split("/"))
 YEAR = datetime.date.today().year
@@ -98,14 +102,14 @@ VERIFY_META = (f'\n<meta name="google-site-verification" content="{e(VERIFY["goo
 def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favicon.png", og="/og.png"):
     navlinks = "".join(f'<a href="/{a["slug"]}/">{e(a["ko_name"])}</a>' for a in apps)
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{BASE}{path}"><meta name="robots" content="index,follow,max-image-preview:large">
+<title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{BASE}{path}"><meta name="robots" content="{"noindex,follow" if OLD else "index,follow,max-image-preview:large"}">
 <link rel="icon" href="/favicon.png" sizes="192x192"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Importants Studio" href="{BASE}/rss.xml">{VERIFY_META}
 <meta property="og:type" content="website"><meta property="og:locale" content="ko_KR"><meta property="og:site_name" content="Importants Studio"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE}{path}">
 <meta property="og:image" content="{BASE}{og}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{BASE}{og}">{extra}
 {GA_HEAD}<style>{BASE_CSS}{css}</style></head><body>
 <nav class="{navcls}"><div class="in"><a class="brand" href="https://importants-studio.com/"><img src="/mark.png" alt="" width="24" height="24"><b>Importants Studio</b></a><div class="links">{navlinks}</div></div></nav>
 {body}
-<footer><div class="in"><span>© {YEAR} <a href="https://importants-studio.com/">Importants Studio</a></span><div class="links"><a href="/">{e(C['LINK_ALL'])}</a><a href="https://importants-studio.com/contact/">{e(C['LINK_CONTACT'])}</a></div><details class="fam"><summary>패밀리 사이트</summary><ul><li><a href="https://importants-studio.com/">홈페이지</a></li><li><a href="https://apps.importants-studio.com/" aria-current="page">앱 소개</a></li><li><a href="https://importants-studio.com/tools/">웹 도구</a></li><li><a href="https://importants-studio.com/blog/">블로그</a></li><li><a href="https://importants-studio.com/blogs/">정보 아카이브</a></li></ul></details></div></footer>
+<footer><div class="in"><span>© {YEAR} <a href="https://importants-studio.com/">Importants Studio</a></span><div class="links"><a href="/">{e(C['LINK_ALL'])}</a><a href="https://importants-studio.com/contact/">{e(C['LINK_CONTACT'])}</a></div><details class="fam"><summary>패밀리 사이트</summary><ul><li><a href="https://importants-studio.com/">홈페이지</a></li><li><a href="https://importants-app.com/" aria-current="page">앱 소개</a></li><li><a href="https://importants-studio.com/tools/">웹 도구</a></li><li><a href="https://importants-studio.com/blog/">블로그</a></li><li><a href="https://importants-studio.com/blogs/">정보 아카이브</a></li></ul></details></div></footer>
 <script>document.addEventListener('DOMContentLoaded',()=>{{{REVEAL_JS}{js}}});{STORE_JS}</script></body></html>"""
 
 def app_meta(a):
@@ -774,5 +778,5 @@ rss = "".join(f"<item><title>{e(a['seo']['store_name'])}</title><link>{BASE}/{a[
 open(f"{OUT}/rss.xml", "w").write(f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>Importants Studio</title><link>{BASE}/</link><description>{e(C["STUDIO_SUB"])}</description><language>ko</language><lastBuildDate>{datetime.datetime.now(datetime.timezone.utc).strftime("%a, %d %b %Y %H:%M:%S +0000")}</lastBuildDate>{rss}</channel></rss>\n')
 for f in os.listdir("static"): shutil.copy(os.path.join("static", f), OUT)  # 검색엔진 소유 확인 HTML 파일 등
 shutil.copytree("review", f"{OUT}/review")  # 앱 심사관용 견본 파일(목록·검색 노출 안 함)
-open(f"{OUT}/CNAME", "w").write("apps.importants-studio.com\n"); open(f"{OUT}/.nojekyll", "w").write("")
+if OLD: open(f"{OUT}/CNAME", "w").write("apps.importants-studio.com\n"); open(f"{OUT}/.nojekyll", "w").write("")
 print("built", [a["slug"] for a in apps])

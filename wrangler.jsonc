@@ -1,0 +1,9 @@
+{
+  // importants-app.com 앱 소개(2026-11-19). 빌드: TARGET=new python3 tools/build.py → dist-app/, 배포: npx wrangler deploy
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "importants-app",
+  "compatibility_date": "2026-11-18",
+  "observability": { "enabled": true },
+  "assets": { "directory": "dist-app", "not_found_handling": "404-page" },
+  "routes": [{ "pattern": "importants-app.com", "custom_domain": true }]
+}
