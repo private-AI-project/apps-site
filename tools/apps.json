@@ -123,7 +123,7 @@
  {
   "slug": "fairlypaid",
   "id": "6834327904",
-  "released": false,
+  "released": true,
   "privacy": "https://importants-studio.com/privacy/fairlypaid/",
   "color": "#101114",
   "raw_dir": "../app/FairlyPaid/content/store/raw2",
