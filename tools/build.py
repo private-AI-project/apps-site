@@ -101,17 +101,40 @@ STORE_JS = "(()=>{const q=new URLSearchParams(location.search).get('from');if(q)
 VERIFY_META = (f'\n<meta name="google-site-verification" content="{e(VERIFY["google"])}">' if VERIFY.get("google") else "") + (f'\n<meta name="naver-site-verification" content="{e(VERIFY["naver"])}">' if VERIFY.get("naver") else "")
 if not OLD: VERIFY_META += '\n<meta name="google-adsense-account" content="ca-pub-8673949681156413">'  # 애드센스 사이트 소유 확인(광고 코드는 도구·글에만)
 if not OLD and VERIFY.get("naver_new"): VERIFY_META += f'\n<meta name="naver-site-verification" content="{e(VERIFY["naver_new"])}">'  # importants-app.com 네이버 소유 확인
+# 바닥글: 새 주소는 도구·블로그 페이지(main-site Base.astro)와 같은 내용·모양(2026-11-19)
+FOOT_OLD = ('<footer><div class="in"><span>© ' + str(YEAR) + ' <a href="https://importants-studio.com/">Importants Studio</a></span><div class="links"><a href="/">' + e(C['LINK_ALL']) + '</a><a href="https://importants-studio.com/contact/">' + e(C['LINK_CONTACT']) + '</a></div>'
+            '<details class="fam"><summary>패밀리 사이트</summary><ul><li><a href="https://importants-studio.com/">홈페이지</a></li><li><a href="https://importants-app.com/" aria-current="page">앱 소개</a></li><li><a href="https://importants-studio.com/tools/">웹 도구</a></li><li><a href="https://importants-studio.com/blog/">블로그</a></li><li><a href="https://importants-studio.com/blogs/">정보 아카이브</a></li></ul></details></div></footer>')
+FOOT_NEW = ('<footer class="foot"><div class="in"><div class="ft-links"><a href="https://importants-studio.com/about/">소개</a><a href="https://importants-studio.com/contact/">문의</a><a href="/tools/">도구</a><a href="/days/">날짜·공휴일</a><a href="https://importants-studio.com/privacy/">개인정보 처리방침</a></div>'
+            '<div class="ft-line">Importants Studio · 사업자등록번호 789-07-03491 · contact@importants-studio.com</div><div class="ft-line">© 2026 Importants Studio · 임폴턴츠 스튜디오</div>'
+            '<details class="fam"><summary>패밀리 사이트</summary><ul><li><a href="https://importants-studio.com/">홈페이지</a></li><li><a href="https://importants-app.com/" aria-current="page">앱 소개</a></li><li><a href="/tools/">웹 도구</a></li><li><a href="/blog/">블로그</a></li><li><a href="https://importants-studio.com/blogs/">정보 아카이브</a></li></ul></details>'
+            '</div></footer><style>footer.foot .in{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:8px;font-size:14px}footer.foot .ft-links{display:flex;gap:18px;flex-wrap:wrap;opacity:.6}footer.foot .ft-line{opacity:.6;overflow-wrap:anywhere}footer.foot .fam{margin-top:8px}footer.foot .fam ul{left:0;right:auto}</style>')
+
 def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favicon.png", og="/og.png"):
     navlinks = "".join(f'<a href="/{a["slug"]}/">{e(a["ko_name"])}</a>' for a in apps)
+    if not OLD:
+        # 새 주소(2026-11-19): 홈은 도구·블로그 페이지와 같은 메뉴, 앱 상세는 앱 목록(지금 앱 표시).
+        # 페이지가 바뀔 때 메뉴가 자연스럽게 바뀌도록 view transition + 하나씩 떠오르는 애니메이션
+        if path == "/":
+            items = [("/", "Work"), ("/tools/", "Tools"), ("/blog/", "Blog"), ("https://importants-studio.com/about/", "About"), ("https://importants-studio.com/contact/", "Contact")]
+            navlinks = "".join(f'<a href="{h}" style="--i:{k}"{" aria-current=page" if h == "/" else ""}>{t}</a>' for k, (h, t) in enumerate(items))
+            mob = "nav .links a:nth-child(n+4){display:none}"
+        else:
+            navlinks = "".join(f'<a href="/{a["slug"]}/" style="--i:{k}"{" aria-current=page" if path == "/" + a["slug"] + "/" else ""}>{e(a["ko_name"])}</a>' for k, a in enumerate(apps))
+            mob = "nav .brand{flex:none;white-space:nowrap}nav .links{flex:1;min-width:0;margin-left:18px;overflow-x:auto;scrollbar-width:none;-webkit-mask:linear-gradient(90deg,#000 85%,transparent)}nav .links::-webkit-scrollbar{display:none}nav .links a{white-space:nowrap}"
+        navlinks += ('<style>@view-transition{navigation:auto}nav .links{view-transition-name:navlinks}'
+                     '::view-transition-old(navlinks){animation:navOut .18s ease both}::view-transition-new(navlinks){animation:navIn .32s cubic-bezier(.2,.7,.2,1) both}'
+                     'nav b{font-weight:700;font-size:17px}nav .links{opacity:1;gap:24px;font-size:15px}nav .links a{opacity:.7;animation:navIn .42s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i)*35ms)}nav .links a[aria-current=page]{opacity:1;font-weight:700}'
+                     '@keyframes navIn{from{opacity:0;transform:translateY(-6px)}}@keyframes navOut{to{opacity:0;transform:translateY(4px)}}'
+                     f'@media(max-width:640px){{nav b{{font-size:15px}}nav .links{{display:flex!important;gap:16px;font-size:14px}}{mob}}}</style>' + ('' if path == '/' else '<script>(()=>{const c=document.querySelector("nav .links [aria-current]");const l=c&&c.parentElement;if(l&&l.scrollWidth>l.clientWidth)l.scrollLeft+=c.getBoundingClientRect().left-l.getBoundingClientRect().left-l.clientWidth/2+c.offsetWidth/2})()</script>'))
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{BASE}{path}"><meta name="robots" content="{"noindex,follow" if OLD else "index,follow,max-image-preview:large"}">
-<link rel="icon" href="/favicon.png" sizes="192x192"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Importants Studio" href="{BASE}/rss.xml">{VERIFY_META}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><link rel="icon" href="/favicon.png" sizes="192x192"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Importants Studio" href="{BASE}/rss.xml">{VERIFY_META}
 <meta property="og:type" content="website"><meta property="og:locale" content="ko_KR"><meta property="og:site_name" content="Importants Studio"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE}{path}">
 <meta property="og:image" content="{BASE}{og}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{BASE}{og}">{extra}
 {GA_HEAD}<style>{BASE_CSS}{css}</style></head><body>
-<nav class="{navcls}"><div class="in"><a class="brand" href="https://importants-studio.com/"><img src="/mark.png" alt="" width="24" height="24"><b>Importants Studio</b></a><div class="links">{navlinks}</div></div></nav>
+<nav class="{navcls}"><div class="in"><a class="brand" href="{"https://importants-studio.com/" if OLD else "/"}"><img src="/mark.png" alt="" width="24" height="24"><b>Importants Studio</b></a><div class="links">{navlinks}</div></div></nav>
 {body}
-<footer><div class="in"><span>© {YEAR} <a href="https://importants-studio.com/">Importants Studio</a></span><div class="links"><a href="/">{e(C['LINK_ALL'])}</a><a href="https://importants-studio.com/contact/">{e(C['LINK_CONTACT'])}</a></div><details class="fam"><summary>패밀리 사이트</summary><ul><li><a href="https://importants-studio.com/">홈페이지</a></li><li><a href="https://importants-app.com/" aria-current="page">앱 소개</a></li><li><a href="https://importants-studio.com/tools/">웹 도구</a></li><li><a href="https://importants-studio.com/blog/">블로그</a></li><li><a href="https://importants-studio.com/blogs/">정보 아카이브</a></li></ul></details></div></footer>
+{FOOT_NEW if not OLD else FOOT_OLD}
 <script>document.addEventListener('DOMContentLoaded',()=>{{{REVEAL_JS}{js}}});{STORE_JS}</script></body></html>"""
 
 def app_meta(a):
@@ -768,6 +791,29 @@ body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#FAFAF8;
 org = {"@context": "https://schema.org", "@type": "Organization", "name": "Importants Studio", "url": f"{BASE}/", "logo": f"{BASE}/favicon.png", "email": MAIL}
 site = {"@context": "https://schema.org", "@type": "WebSite", "name": "Importants Studio", "url": f"{BASE}/", "inLanguage": "ko"}
 lst = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{BASE}/{a['slug']}/", "name": a["seo"]["store_name"]} for i, a in enumerate(apps)]}
+import re as _re
+def home_more():
+    """새 주소 홈: 같은 도메인의 도구·새 글로 잇는 칸(제목은 도구·블로그 페이지의 기존 영어 제목 그대로)."""
+    ms = "../main-site"
+    tsrc = open(f"{ms}/src/data/tools.ts").read()
+    def ttl(i):
+        m = _re.search(r'id: "' + _re.escape(i) + r'"[^\n]*?title: "([^"]+)"', tsrc); return m.group(1) if m else i
+    tools = ["ladder", "roulette", "wage", "decibel", "dday", "pdf-merge"]
+    posts = []
+    for f in os.listdir(f"{ms}/src/content/blog"):
+        t = open(f"{ms}/src/content/blog/{f}").read().split("---")[1]
+        tt = _re.search(r'^title: "?(.+?)"?$', t, _re.M).group(1); d = _re.search(r"^date: (\S+)", t, _re.M).group(1)
+        posts.append((d, f[:-3], tt))
+    posts = sorted(posts, reverse=True)[:3]
+    tl = "".join(f'<a class="hm-t" href="/tools/{i}/">{e(ttl(i))}<span>→</span></a>' for i in tools)
+    pl = "".join(f'<a class="hm-p" href="/blog/{slug}/"><img src="/blog/{slug}/1.webp" alt="" loading="lazy"><b>{e(tt)}</b></a>' for d, slug, tt in posts)
+    return (f'<section class="in hm"><div class="hm-h"><h2>Tools</h2><a href="/tools/">View all →</a></div><div class="hm-tg">{tl}</div></section>'
+            f'<section class="in hm"><div class="hm-h"><h2>Blog</h2><a href="/blog/">View all →</a></div><div class="hm-pg">{pl}</div></section>'
+            '<style>.hm{margin-top:clamp(56px,7vw,96px)}.hm-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}.hm-h h2{margin:0;font-size:clamp(24px,2.4vw,30px);font-weight:900;letter-spacing:-.04em}.hm-h a{font-size:15px;font-weight:700;opacity:.6}'
+            '.hm-tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.hm-t{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-radius:18px;background:rgba(0,0,0,.04);font-weight:800;font-size:16px}'
+            '.hm-pg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.hm-p{display:grid;gap:10px}.hm-p img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:18px}.hm-p b{font-size:16px;line-height:1.45;letter-spacing:-.02em}'
+            '@media (max-width:720px){.hm-tg{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-pg{grid-template-columns:1fr}}</style>')
+
 og_image(f"{OUT}/og.png", "#FAFAF8", "#16181D", "#5E6370", [f"{OUT}/{a['slug']}/icon.png" for a in apps], "Importants Studio", C["STUDIO_SUB"])
 open(f"{OUT}/index.html", "w").write(page("/", "Importants Studio - " + " · ".join(a["ko_name"] for a in apps), C["STUDIO_SUB"] + " " + " · ".join(a["seo"]["store_name"] for a in apps), css,
     f'<header class="hero"><div class="in r"><h1>{br(C["STUDIO_HEADLINE"])}</h1><p>{e(C["STUDIO_SUB"])}</p></div></header><div class="in wall">{cards}</div>',
