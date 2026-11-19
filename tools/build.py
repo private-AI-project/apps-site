@@ -99,6 +99,7 @@ GA_HEAD = (f'<script async src="https://www.googletagmanager.com/gtag/js?id={AN[
 # 스토어 버튼: 어디서 왔는지(?from=tool-ladder 등, 없으면 apps-site)를 App Store 캠페인 ct로, pt가 있을 때만
 STORE_JS = "(()=>{const q=new URLSearchParams(location.search).get('from');if(q)try{sessionStorage.setItem('from',q)}catch(e){};let f=q;try{f=f||sessionStorage.getItem('from')}catch(e){};f=(f||'apps-site').replace(/[^a-z0-9-]/gi,'').slice(0,40);const PT=" + json.dumps(AN.get("pt","")) + ";document.querySelectorAll('.storebtn').forEach(b=>{if(PT)b.href=`https://apps.apple.com/kr/app/apple-store/id${b.dataset.id}?pt=${PT}&ct=${f}&mt=8`;b.addEventListener('click',()=>{try{window.gtag&&gtag('event','store_click',{app:b.dataset.slug,from:f})}catch(e){}})})})();"
 VERIFY_META = (f'\n<meta name="google-site-verification" content="{e(VERIFY["google"])}">' if VERIFY.get("google") else "") + (f'\n<meta name="naver-site-verification" content="{e(VERIFY["naver"])}">' if VERIFY.get("naver") else "")
+if not OLD and VERIFY.get("naver_new"): VERIFY_META += f'\n<meta name="naver-site-verification" content="{e(VERIFY["naver_new"])}">'  # importants-app.com 네이버 소유 확인
 def page(path, title, desc, css, body, js="", extra="", navcls="", icon="/favicon.png", og="/og.png"):
     navlinks = "".join(f'<a href="/{a["slug"]}/">{e(a["ko_name"])}</a>' for a in apps)
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
