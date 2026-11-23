@@ -33,10 +33,9 @@
   "extra_shots": [
    "record",
    "pattern",
-   "pdf",
+   "doc",
    "measure",
    "auto",
-   "speech",
    "calendar",
    "steps"
   ]

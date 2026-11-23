@@ -391,6 +391,7 @@ css = PRETENDARD + """body{font-family:"Pretendard Variable",Pretendard,sans-ser
 .why{padding:clamp(72px,9vw,110px) 0}.why .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}.why h4{font-size:20px;font-weight:800;margin:0 0 10px;color:#2C6A68}.why p{margin:0;color:#566463;line-height:1.7}
 .end{text-align:center;padding:clamp(80px,10vw,120px) 24px;background:#1D2B2B;color:#fff}.end img{width:92px;height:92px;border-radius:24px;margin:0 auto 24px}.end h2{font-size:clamp(30px,4.2vw,50px);font-weight:800;letter-spacing:-.045em;margin:0 0 30px}.end .btn.main{background:#fff;color:#1D2B2B}.end small{display:block;margin-top:20px;opacity:.6}.end small a{text-decoration:underline}
 @media(max-width:900px){.hero .in,.why .grid{grid-template-columns:1fr}.why .grid{gap:28px}.fl{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(-1*clamp(20px,5vw,56px));padding:0 clamp(20px,5vw,56px) 8px;scrollbar-width:none}.fl::-webkit-scrollbar{display:none}.fl:before,.fl:after{display:none}.fs{flex:0 0 76%;scroll-snap-align:center;background:#F3F6F5;border-radius:28px;padding:28px 20px 0;overflow:hidden;height:560px}.fs .dot{box-shadow:none;flex:none;width:28px;min-width:28px}.fs p{margin-bottom:22px}.fs .phone{--w:220px}.hstats span{display:block;margin-top:4px;font-size:14px}.hstats{gap:18px}.hstats div{flex:1}.stage .phone{--w:240px}.ring{width:260px}}"""
+# v1.4(2026-11-23, 판 카드 #151) — 스토어 1.4.0 스크린샷 7장과 같은 문구·순서·화면(말소리·PDF 장 빠지고 해결 5단계·서류 장).
 # v1.3(2026-11-13) — 스토어 스크린샷과 같은 문구·화면: 장면마다 작은 줄(상황)+큰 줄(결과)+실제 화면, 좌우 번갈아. 측정값 안내 카드.
 css += """.scn{padding:clamp(64px,8vw,110px) 0;background:#fff}.scn+.scn{padding-top:0}.scn h2{font-size:clamp(30px,3.8vw,48px);font-weight:800;letter-spacing:-.045em;margin:0 0 clamp(40px,6vw,72px);text-align:center}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px);align-items:center;padding:clamp(28px,4vw,48px) 0}.row.rev .tx{order:2}.row .tx{max-width:460px;justify-self:end}.row.rev .tx{justify-self:start}
@@ -415,7 +416,7 @@ if(matchMedia('(prefers-reduced-motion: reduce)').matches){[41,44,52,66,71,63,55
 let id=null;new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!id)id=setInterval(step,100);else if(!e.isIntersecting&&id){clearInterval(id);id=null}})).observe(mp);draw()});"""
 def phone_live(src, alt): return f'<div class="phone"><img src="{src}" alt="{e(alt)}" loading="lazy">{MEASURE}</div>'
 # 장면별 움직임(앱 실제 문구·시연 데이터 숫자만). .vis 안에 겹쳐 두고, 화면에 들어오면(.on) 반복. 모션 줄이기면 정지.
-REPORT = save("raw/floorlog/report.png", f"{OUT}/floorlog/report.webp", 700)
+PAPER = save("raw/floorlog/paper.png", f"{OUT}/floorlog/paper.webp", 700)   # 1.4: 앱이 만든 관리사무소 알림 서류 첫 쪽(시연 데이터 23건, 스토어 4장과 같은 종이)
 css += """.vis{position:relative}.ov{position:absolute;z-index:3;pointer-events:none;font-family:"Pretendard Variable",Pretendard,sans-serif}
 .cardx{background:#fff;border-radius:20px;box-shadow:0 18px 40px rgba(29,43,43,.16);padding:14px 16px;color:#1D2B2B}
 .nt{left:50%;top:18px;width:min(86%,360px);transform:translate(-50%,-140%);display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;background:rgba(250,251,251,.97);border-radius:22px;padding:12px 14px;box-shadow:0 16px 40px rgba(29,43,43,.2)}
@@ -431,25 +432,25 @@ css += """.vis{position:relative}.ov{position:absolute;z-index:3;pointer-events:
 .hb{left:50%;bottom:26px;transform:translateX(-50%);width:min(88%,360px)}.hb b{display:block;font-size:15px;margin:0 0 10px}.hb .bars{display:flex;align-items:flex-end;gap:3px;height:72px}.hb .bars i{flex:1;background:#2C6A68;opacity:.85;border-radius:3px 3px 1px 1px;transform:scaleY(0);transform-origin:bottom}
 .hb .bars i.pk{background:#C0673E;opacity:1}.hb .ax{display:flex;justify-content:space-between;font-size:11px;color:#5B6470;margin-top:6px}.on .hb .bars i{animation:hbr 6s cubic-bezier(.3,1.3,.5,1) infinite;animation-delay:calc(var(--i)*40ms)}
 @keyframes hbr{0%{transform:scaleY(0)}18%,85%{transform:scaleY(1)}96%,100%{transform:scaleY(0)}}
-.pp{left:58%;bottom:-60%;width:min(52%,250px);border-radius:8px;box-shadow:0 24px 50px rgba(29,43,43,.25);transform:rotate(-4deg)}.on .pp{animation:ppu 6.5s cubic-bezier(.2,.8,.2,1) infinite}@keyframes ppu{0%,10%{bottom:-60%}30%,82%{bottom:6%}96%,100%{bottom:-60%}}
+.pp{left:44%;bottom:-60%;width:min(50%,250px);border-radius:8px;box-shadow:0 24px 50px rgba(29,43,43,.25);transform:rotate(-4deg)}.on .pp{animation:ppu 6.5s cubic-bezier(.2,.8,.2,1) infinite}@keyframes ppu{0%,10%{bottom:-60%}30%,82%{bottom:6%}96%,100%{bottom:-60%}}
 .ck{left:50%;bottom:24px;transform:translateX(-50%);width:min(88%,350px);display:flex;flex-direction:column;gap:10px}.ck .st{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700}.ck .st i{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #9AA6A5;position:relative}
 .ck .st.done i,.on .ck .st.go i{background:#2C6A68;border-color:#2C6A68}.ck .st.done i:after,.ck .st.go i:after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
 .ck .st.go i{background:#fff;border-color:#9AA6A5}.ck .st.go i:after{opacity:0}.on .ck .st.go i{animation:ckg 6s infinite}.on .ck .st.go i:after{animation:cka 6s infinite}.ck .st.nx{color:#9AA6A5}.on .ck .st.nx{animation:ckn 6s infinite}
+.ck .st.lt{color:#9AA6A5}
 @keyframes ckg{0%,25%{background:#fff;border-color:#9AA6A5}32%,88%{background:#2C6A68;border-color:#2C6A68}96%,100%{background:#fff;border-color:#9AA6A5}}@keyframes cka{0%,28%{opacity:0}34%,88%{opacity:1}96%,100%{opacity:0}}@keyframes ckn{0%,40%{color:#9AA6A5}50%,88%{color:#2C6A68}96%,100%{color:#9AA6A5}}
 @media (prefers-reduced-motion:reduce){.on .nt,.on .sp *,.on .sp .file:after,.on .hb .bars i,.on .pp,.on .ck *{animation:none!important}.nt{transform:translate(-50%,0)}.sp .tag,.sp .kept{opacity:1}.sp .file{opacity:.25}.sp .file:after,.hb .bars i{transform:none}.hb .bars i{transform:scaleY(1)}.pp{bottom:6%}}
-@media(max-width:900px){.cnt{right:5%;top:18%}}"""
+@media(max-width:900px){.cnt{right:auto;left:52%;top:18%}.pp{left:34%;width:56%}}"""
 HOURS = [2, 2, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 2, 1, 1, 3, 6]   # 시연 데이터 시간대별 건수(StoreDemo)
 WAVE = '<svg viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>'
 OVER = {
  "auto": f'<div class="ov nt"><img src="icon.png" alt=""><div><small><span>FloorLog</span><span>오전 7:00</span></small><b>밤사이 기록</b><p>밤사이 기준을 넘는 소리를 6건 기록했어요.</p></div></div>',
- "speech": f'<div class="ov sp"><span class="tag">말소리 제외</span><span class="ch file">{WAVE}소리 파일 · 오전 1:05</span><span class="ch kept">{WAVE}오전 1:05 · 약 54dB 기록</span></div>',
  "calendar": '<div class="ov cnt cardx"><small>이번 달</small><b data-to="23">0건</b></div>',
  "pattern": '<div class="ov hb cardx"><b>주로 밤 11시대에 몰려 있어요</b><div class="bars">' + "".join(f'<i class="{"pk" if h == 23 else ""}" style="--i:{h};height:{max(v, .3) / 6 * 100:.0f}%"></i>' for h, v in enumerate(HOURS)) + '</div><div class="ax"><span>0시</span><span>6시</span><span>12시</span><span>18시</span><span>23시</span></div></div>',
- "pdf": f'<img class="ov pp" src="{REPORT}" alt="">',
- "steps": '<div class="ov ck cardx"><span class="st done"><i></i>관리사무소에 알리기</span><span class="st go"><i></i>층간소음관리위원회에 조정 신청</span><span class="st nx"><i></i>이웃사이센터 상담</span></div>',
+ "doc": f'<img class="ov pp" src="{PAPER}" alt="">',
+ "steps": '<div class="ov ck cardx"><span class="st go"><i></i>관리사무소에 알리기</span><span class="st nx"><i></i>층간소음관리위원회에 조정 신청</span><span class="st lt"><i></i>이웃사이센터 상담</span><span class="st lt"><i></i>분쟁조정위원회에 조정 신청</span><span class="st lt"><i></i>민사소송</span></div>',   # 1.4 해결 탭 5단계(DisputeSteps 이름 그대로) — 1단계 체크 → 2단계 차례
 }
 SCENE_JS = """const cobs=new IntersectionObserver(es=>es.forEach(e=>{e.target.classList.toggle('on',e.isIntersecting);const c=e.target.querySelector('.cnt b');if(c&&e.isIntersecting&&!c.dataset.run){c.dataset.run=1;const to=+c.dataset.to;if(matchMedia('(prefers-reduced-motion: reduce)').matches){c.textContent=to+'건';return}let n=0;const id=setInterval(()=>{n++;c.textContent=n+'건';if(n>=to)clearInterval(id)},45)}}),{threshold:.35});document.querySelectorAll('.vis').forEach(v=>cobs.observe(v));"""
-HL = {"measure": "데시벨(dB)", "auto": "자동", "speech": "바로 지우고", "calendar": "23건", "pattern": "밤 60%", "pdf": "한눈에", "steps": "다음 단계"}
+HL = {"measure": "데시벨(dB)", "steps": "체크리스트", "doc": "간단하게 입력해", "auto": "자동", "calendar": "날짜별로", "pattern": "자세하게 분석"}   # 스토어 1.4.0 스크린샷 강조와 같게
 def hl(t, w): return br(t).replace(e(w), f"<em>{e(w)}</em>", 1) if w else br(t)
 rows = "".join(f'<div class="row r{" rev" if i % 2 else ""}"><div class="tx">{"<span class=pro>Pro</span>" if sc.get("pro") else ""}<p class="k">{e(sc["kicker"])}</p><h3>{hl(sc["title"], HL.get(sc["screen"]))}</h3></div><div class="vis">{phone_live(S[sc["screen"]], sc["kicker"]) if sc["screen"] == "measure" else phone(S[sc["screen"]], sc["kicker"])}{OVER.get(sc["screen"], "")}</div></div>' for i, sc in enumerate(m["scenes"]))
 body = f"""<header class="hero"><div class="in"><div class="r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><h1>{br(m['hero_title'])}</h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}
