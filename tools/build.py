@@ -814,7 +814,7 @@ def home_more():
             '@media (max-width:720px){.hm-tg{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-pg{grid-template-columns:1fr}}</style>')
 
 og_image(f"{OUT}/og.png", "#FAFAF8", "#16181D", "#5E6370", [f"{OUT}/{a['slug']}/icon.png" for a in apps], "Importants Studio", C["STUDIO_SUB"])
-open(f"{OUT}/index.html", "w").write(page("/", "Importants Studio - " + " · ".join(a["ko_name"] for a in apps), C["STUDIO_SUB"] + " " + " · ".join(a["seo"]["store_name"] for a in apps), css,
+open(f"{OUT}/index.html", "w").write(page("/", "Importants Studio", "우리의 중요한 가치를 디지털 경험으로 구현합니다.", css,  # 검색 결과 제목·설명(2026-11-23 사장님 문장, 판 카드 #101): 길면 잘려서 짧게
     f'<header class="hero"><div class="in r"><h1>{br(C["STUDIO_HEADLINE"])}</h1><p>{e(C["STUDIO_SUB"])}</p></div></header><div class="in wall">{cards}</div>',
     extra="".join(f'\n<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in (org, site, lst))))
 
