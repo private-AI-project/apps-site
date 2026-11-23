@@ -578,14 +578,20 @@ em{font-style:normal;background:linear-gradient(transparent 56%,#D3F55A 56%,#D3F
 .why h4:before{transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.2,.7,.2,1) .35s}.why .on h4:before{transform:none}
 .end img{transition:transform 1s cubic-bezier(.34,1.6,.5,1) .2s}.end:not(.on) img{transform:scale(.6) rotate(-12deg)}.end.on img{animation:bob 4s ease-in-out 1.4s infinite}@keyframes bob{50%{transform:translateY(-8px) rotate(-3deg)}}
 .end h2 .ul{background:linear-gradient(transparent 60%,#C4EC40 60%,#C4EC40 92%,transparent 92%) no-repeat 0 0/0% 100%;transition:background-size 1s .6s}.end.on h2 .ul{background-size:100% 100%}
-@media(max-width:900px){.fx.hol{left:0;top:6%}.fx.run{right:0;top:8%}.fx.dial{left:0;bottom:10%}.fx.calc2{right:0;bottom:8%}}
+.fx.sev{right:-2%;top:30%}.fx.sev .big{display:inline-block;background:linear-gradient(transparent 56%,#D3F55A 56%,#D3F55A 92%,transparent 92%)}
+.fx.job{left:-2%;top:26%;padding:12px}.fx.job span{display:block;padding:9px 14px;border-radius:12px;border:1px solid #E3E5E9;margin-top:6px;font-size:14px;animation:jb 6.6s infinite;animation-play-state:paused}.fx.job span:first-of-type{margin-top:4px}.vis.on .fx.job span{animation-play-state:running}
+.fx.job span:nth-of-type(2){animation-delay:2.2s}.fx.job span:nth-of-type(3){animation-delay:4.4s}@keyframes jb{0%,30%{background:#101114;color:#D3F55A;border-color:#101114}34%,100%{background:#fff;color:#101114;border-color:#E3E5E9}}
+@media(max-width:900px){.fx.hol{left:0;top:6%}.fx.run{right:0;top:8%}.fx.dial{left:0;bottom:10%}.fx.calc2{right:0;bottom:8%}.fx.sev{right:0;top:10%}.fx.job{left:0;top:8%}}
 @media(max-width:900px){.hero .in,.calc .in,.feat .in{grid-template-columns:minmax(0,1fr)}.hero .tx{padding-bottom:0}.hero .vis{height:520px;margin-top:20px}.hero .vis .phone{--w:210px;left:4%}.hero .vis .phone.p2{--w:180px;top:70px}.lg{left:auto;right:2%;bottom:10px;width:300px}.lg .amt{font-size:30px}.feat.rev .tx{order:0}.stats,.why .grid{grid-template-columns:1fr}.feat .phone{--w:240px}}"""
 mins = "".join(f"<span>{x:02d}</span>" for x in [52, 54, 56, 58, 0])   # 다이얼이 돌아 10:00에 멈춤
 FX = {"home_scrolled": '<div class="fx hol"><small>주휴수당</small><span class="ck">✓</span><span class="big">+30,960원</span></div>',
       "clock": '<div class="fx run"><small><span class="dot"></span>근무 중</small><span class="big"><span id="earn">23,220</span>원</span></div>',
       "input": f'<div class="fx dial"><small>출근</small><span class="big"><span class="roll"><i style="--n:1"><span>09</span><span>10</span></i></span>:<span class="roll"><i style="--n:4">{mins}</i></span></span></div>',
-      "pay": '<div class="fx calc2"><small>기본급</small>100시간 30분 × 10,320원<span class="eq">= 1,037,160원</span></div>'}
-feats = "".join(f"""<section class="feat{' rev' if i % 2 else ''}"><div class="in"><div class="tx r"><span class="k">{e(sc[k]['kicker'])}</span><h3>{fp_title(sc[k]['title'])}</h3><p>{e(sc[k]['body'])}</p></div><div class="vis r d1">{phone(S[k], sc[k]['kicker'])}{FX[k]}</div></div></section>""" for i, k in enumerate(["home_scrolled", "clock", "input", "pay"]))
+      "pay": '<div class="fx calc2"><small>기본급</small>100시간 30분 × 10,320원<span class="eq">= 1,037,160원</span></div>',
+      # 1.3.0(판 카드 #149): 퇴직금 = 숫자 세기(앱 시연 값 1,020,607원), 하는 일 고르기 = 선택이 차례로 바뀜(앱 묶음 이름)
+      "severance": '<div class="fx sev"><small>예상 퇴직금</small><span class="big"><span id="sevn" data-to="1020607">0</span>원</span></div>',
+      "flow": '<div class="fx job"><small>어떤 일을 하세요?</small><span>매장 알바</span><span>월급 직원</span><span>배달·대리</span></div>'}
+feats = "".join(f"""<section class="feat{' rev' if i % 2 else ''}"><div class="in"><div class="tx r"><span class="k">{e(sc[k]['kicker'])}</span><h3>{fp_title(sc[k]['title'])}</h3><p>{e(sc[k]['body'])}</p></div><div class="vis r d1">{phone(S[k], sc[k]['kicker'])}{FX[k]}</div></div></section>""" for i, k in enumerate(["home_scrolled", "severance", "clock", "flow", "input", "pay"]))
 body = f"""<header class="hero"><div class="in"><div class="tx r"><span class="chip"><img src="icon.png" alt="">{e(a['ko_name'])}</span><h1>{fp_title(m['hero_title'])}</h1><p>{e(m['hero_sub'])}</p>{store_btn(a)}</div>
 <div class="vis r d1">{phone(S['home'], '홈')}{phone(S['clock'], '근무 중', 'p2')}<div class="lg" id="lg"><div class="lb">11월 예상 실수령액</div><div class="amt"><em><span id="lga">0</span><small>원</small></em></div><ul>{ledger}</ul></div></div></div></header>
 <div class="in"><div class="stats">{''.join(f'<div class="r d{i}"><b>{e(n)}</b><span>{e(l)}</span></div>' for i, (n, l) in enumerate(m['stats']))}</div></div>
@@ -606,6 +612,7 @@ let demo=true;cw.addEventListener('input',()=>{demo=false;const n=+(cw.value.rep
 const res=document.querySelector('.res');let last=-1;const calc0=calc;calc=()=>{calc0();const v=cr.textContent;if(v!==last){res.classList.remove('pop');void res.offsetWidth;res.classList.add('pop');last=v}};
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 new IntersectionObserver((es,ob)=>{if(!es[0].isIntersecting)return;ob.disconnect();if(RM){calc();return}ch.value=0;calc();let h=0;const st=setInterval(()=>{if(!demo){clearInterval(st);return}h+=1;ch.value=h;calc();if(h>=20)clearInterval(st)},70)},{threshold:.5}).observe(document.getElementById('calc'));
+const sevn=document.getElementById('sevn');new IntersectionObserver((es,ob)=>{if(!es[0].isIntersecting)return;ob.disconnect();const to=+sevn.dataset.to;if(RM){sevn.textContent=to.toLocaleString();return}const t0=performance.now()+700,f=t=>{const p=Math.max(0,Math.min(1,(t-t0)/1400));sevn.textContent=Math.round(to*(1-Math.pow(1-p,3))).toLocaleString();if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)},{threshold:.4}).observe(sevn);
 const earn=document.getElementById('earn');let ev=23220;if(!RM)setInterval(()=>{ev+=3;earn.textContent=ev.toLocaleString()},1050);calc();"""
 write(a, css, body, js)
 
