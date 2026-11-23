@@ -23,6 +23,13 @@ e = lambda s: html.escape(str(s or ""), quote=True)
 br = lambda s: "<br>".join(e(x.strip()) for x in (s or "").split("/"))
 YEAR = datetime.date.today().year
 
+# 저장소 위 폴더(new-auto-planning). 브랜치마다 따로 만든 작업 폴더(git worktree)에서 돌려도 main-site 를 찾게 git 공용 폴더 기준(2026-11-23, 판 카드 #153)
+try:
+    import subprocess as _sp
+    ROOT = os.path.dirname(os.path.dirname(_sp.check_output(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"], text=True).strip()))
+except Exception:
+    ROOT = ".."
+
 def save(src, dst, width, fmt="WEBP"):
     im = Image.open(src); im = im.convert("RGBA" if fmt == "PNG" else "RGB")
     if im.width > width: im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
@@ -793,7 +800,7 @@ lst = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement":
 import re as _re
 def home_more():
     """새 주소 홈: 같은 도메인의 도구·새 글로 잇는 칸(제목은 도구·블로그 페이지의 기존 영어 제목 그대로)."""
-    ms = "../main-site"
+    ms = os.path.join(ROOT, "main-site")
     tsrc = open(f"{ms}/src/data/tools.ts").read()
     def ttl(i):
         m = _re.search(r'id: "' + _re.escape(i) + r'"[^\n]*?title: "([^"]+)"', tsrc); return m.group(1) if m else i

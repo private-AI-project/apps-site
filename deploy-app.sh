@@ -3,7 +3,7 @@
 # 앱 소개 파일이 이름이 겹치면 이긴다. 회사용 페이지(홈·about·contact·privacy·blogs)와 옛 도메인 전용 파일은 넣지 않는다.
 set -euo pipefail
 cd "$(dirname "$0")"
-MAIN=../main-site
+MAIN="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)/../.." && pwd)/main-site"   # 브랜치 작업 폴더(worktree)에서도 찾게(판 카드 #153)
 # 파이썬 3.12 이상 + Pillow 가 필요하다(맥 기본 python3 은 3.9 라 안 됨). 없으면 uv 로 .venv 를 만든다(2026-11-23, 판 카드 #102).
 PY=.venv/bin/python
 if ! "$PY" -c 'import PIL' 2>/dev/null; then

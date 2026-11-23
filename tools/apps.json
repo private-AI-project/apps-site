@@ -5,7 +5,7 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/luckybite/",
   "color": "#FF7A3D",
-  "raw_dir": "../app/LuckyBite/content/store/raw/ko",
+  "raw_dir": "raw/lucky-bite",
   "ko_name": "뽑기 한입",
   "hero": [
    "home",
@@ -68,7 +68,7 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/quizbite/",
   "color": "#4F7CFF",
-  "raw_dir": "../app/QuizBite/content/screenshots/raw",
+  "raw_dir": "raw/quiz-bite",
   "ko_name": "퀴즈 한입",
   "hero": [
    "home"
@@ -80,9 +80,9 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/maejeum/",
   "color": "#4A5C52",
-  "raw_dir": "../app/Maejeum/content/store/raw",
+  "raw_dir": "raw/maejeum",
   "ko_name": "맺음",
-  "icon": "../app/Maejeum/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
+  "icon": "raw/maejeum/icon.png",
   "hero": [
    "funeral",
    "obit_app"
@@ -94,9 +94,9 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/chaekkan/",
   "color": "#F5B544",
-  "raw_dir": "../app/Chaekkan/content/store/v2/raw/iphone",
+  "raw_dir": "raw/chaekkan",
   "ko_name": "책칸",
-  "icon": "../app/Chaekkan/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+  "icon": "raw/chaekkan/icon.png",
   "hero": [
    "s1_library",
    "s2_reader"
@@ -112,9 +112,9 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/officekit/",
   "color": "#315DFE",
-  "raw_dir": "../app/OfficeKit/content/store/raw",
+  "raw_dir": "raw/officekit",
   "ko_name": "오피스킷",
-  "icon": "../app/OfficeKit/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+  "icon": "raw/officekit/icon.png",
   "hero": [
    "library",
    "home"
@@ -126,9 +126,9 @@
   "released": true,
   "privacy": "https://importants-studio.com/privacy/fairlypaid/",
   "color": "#101114",
-  "raw_dir": "../app/FairlyPaid/content/store/raw2",
+  "raw_dir": "raw/fairlypaid",
   "ko_name": "일한만큼 받자",
-  "icon": "../app/FairlyPaid/Resources/Assets.xcassets/AppIcon.appiconset/icon_1024.png",
+  "icon": "raw/fairlypaid/icon.png",
   "hero": [
    "home",
    "clock"
@@ -149,7 +149,7 @@
   "color": "#141A3A",
   "raw_dir": "raw/loary",
   "ko_name": "로아리",
-  "icon": "../app/Loary/Resources/Assets.xcassets/AppIcon.appiconset/icon.png",
+  "icon": "raw/loary/icon.png",
   "hero": [
    "s1_home",
    "s5_sleep"
@@ -164,7 +164,7 @@
   "color": "#1C273A",
   "raw_dir": "raw/afterimage",
   "ko_name": "잔상",
-  "icon": "../app/Afterimage/assets/brand/AppIcon-light-1024.png",
+  "icon": "raw/afterimage/icon.png",
   "hero": [
    "s1_pending",
    "s1_fan"
