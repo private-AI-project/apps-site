@@ -144,7 +144,7 @@
  {
   "slug": "loary",
   "id": "6835028989",
-  "released": false,
+  "released": true,
   "privacy": "https://importants-studio.com/privacy/loary/",
   "color": "#141A3A",
   "raw_dir": "raw/loary",
