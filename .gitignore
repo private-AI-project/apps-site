@@ -10,3 +10,6 @@ dist-app/
 .env*
 !.env.example
 .venv/
+
+# 앱·버전 브랜치 작업 폴더(git worktree, 판 카드 #153)
+.branches/
