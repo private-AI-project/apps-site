@@ -143,8 +143,7 @@ def app_meta(a):
           "description": a["seo"]["description"], "keywords": ", ".join(a["seo"]["keywords"]), "image": f"{BASE}/{a['slug']}/icon.png", "screenshot": [f"{BASE}/{a['slug']}/{a['shots'][h]}" for h in a["hero"]],
           "url": f"{BASE}/{a['slug']}/", "installUrl": a["store"], "publisher": {"@type": "Organization", "name": "Importants Studio", "url": BASE},
           "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}}
-    avg, n = a["rating"]
-    if n: ld["aggregateRating"] = {"@type": "AggregateRating", "ratingValue": round(avg, 1), "ratingCount": n, "bestRating": 5, "worstRating": 1}
+    # 별점(aggregateRating)은 넣지 않는다(2026-11-23, 판 카드 #100): 화면에 안 보이는 별점은 구글이 정책 위반으로 본다. 화면에 별점을 보여 줄 때 같이 다시 넣는다.
     crumbs = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Importants Studio", "item": f"{BASE}/"}, {"@type": "ListItem", "position": 2, "name": a["ko_name"], "item": f"{BASE}/{a['slug']}/"}]}
     x = f'\n<meta name="keywords" content="{e(", ".join(a["seo"]["keywords"]))}"><script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script><script type="application/ld+json">{json.dumps(crumbs, ensure_ascii=False)}</script>'
     if a["released"]: x += f'\n<meta name="apple-itunes-app" content="app-id={a["id"]}">'
