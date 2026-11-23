@@ -419,9 +419,9 @@ def phone_live(src, alt): return f'<div class="phone"><img src="{src}" alt="{e(a
 PAPER = save("raw/floorlog/paper.png", f"{OUT}/floorlog/paper.webp", 700)   # 1.4: 앱이 만든 관리사무소 알림 서류 첫 쪽(시연 데이터 23건, 스토어 4장과 같은 종이)
 css += """.vis{position:relative}.ov{position:absolute;z-index:3;pointer-events:none;font-family:"Pretendard Variable",Pretendard,sans-serif}
 .cardx{background:#fff;border-radius:20px;box-shadow:0 18px 40px rgba(29,43,43,.16);padding:14px 16px;color:#1D2B2B}
-.nt{left:50%;top:18px;width:min(86%,360px);transform:translate(-50%,-140%);display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;background:rgba(250,251,251,.97);border-radius:22px;padding:12px 14px;box-shadow:0 16px 40px rgba(29,43,43,.2)}
+.nt{left:50%;top:18px;width:min(86%,360px);transform:translate(-50%,-24px);opacity:0;display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;background:rgba(250,251,251,.97);border-radius:22px;padding:12px 14px;box-shadow:0 16px 40px rgba(29,43,43,.2)}
 .nt img{width:40px;height:40px;border-radius:10px}.nt small{display:flex;justify-content:space-between;font-size:12px;color:#5B6470}.nt b{display:block;font-size:14px;margin:2px 0}.nt p{margin:0;font-size:13px;line-height:1.35}
-.on .nt{animation:ntd 6s cubic-bezier(.2,.8,.2,1) infinite}@keyframes ntd{0%,8%{transform:translate(-50%,-140%)}18%,78%{transform:translate(-50%,0)}90%,100%{transform:translate(-50%,-140%)}}
+.on .nt{animation:ntd 6s cubic-bezier(.2,.8,.2,1) infinite}@keyframes ntd{0%,8%{transform:translate(-50%,-24px);opacity:0}18%,78%{transform:translate(-50%,0);opacity:1}90%,100%{transform:translate(-50%,-24px);opacity:0}}
 .sp{left:50%;bottom:28px;transform:translateX(-50%);width:min(86%,340px);display:flex;flex-direction:column;gap:8px}.sp .ch{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;border-radius:14px;padding:10px 12px;background:#fff;box-shadow:0 10px 26px rgba(29,43,43,.14)}
 .sp .ch svg{width:18px;height:18px;stroke:#2C6A68;fill:none;stroke-width:2;stroke-linecap:round}.sp .tag{align-self:flex-start;font-size:12px;font-weight:800;color:#fff;background:#C0673E;border-radius:99px;padding:4px 10px;opacity:0}
 .sp .file{position:relative}.sp .file:after{content:"";position:absolute;left:12px;right:12px;top:50%;height:2px;background:#C0673E;transform:scaleX(0);transform-origin:left}.sp .kept{opacity:0;color:#2C6A68}
@@ -438,7 +438,7 @@ css += """.vis{position:relative}.ov{position:absolute;z-index:3;pointer-events:
 .ck .st.go i{background:#fff;border-color:#9AA6A5}.ck .st.go i:after{opacity:0}.on .ck .st.go i{animation:ckg 6s infinite}.on .ck .st.go i:after{animation:cka 6s infinite}.ck .st.nx{color:#9AA6A5}.on .ck .st.nx{animation:ckn 6s infinite}
 .ck .st.lt{color:#9AA6A5}
 @keyframes ckg{0%,25%{background:#fff;border-color:#9AA6A5}32%,88%{background:#2C6A68;border-color:#2C6A68}96%,100%{background:#fff;border-color:#9AA6A5}}@keyframes cka{0%,28%{opacity:0}34%,88%{opacity:1}96%,100%{opacity:0}}@keyframes ckn{0%,40%{color:#9AA6A5}50%,88%{color:#2C6A68}96%,100%{color:#9AA6A5}}
-@media (prefers-reduced-motion:reduce){.on .nt,.on .sp *,.on .sp .file:after,.on .hb .bars i,.on .pp,.on .ck *{animation:none!important}.nt{transform:translate(-50%,0)}.sp .tag,.sp .kept{opacity:1}.sp .file{opacity:.25}.sp .file:after,.hb .bars i{transform:none}.hb .bars i{transform:scaleY(1)}.pp{bottom:6%}}
+@media (prefers-reduced-motion:reduce){.on .nt,.on .sp *,.on .sp .file:after,.on .hb .bars i,.on .pp,.on .ck *{animation:none!important}.nt{transform:translate(-50%,0);opacity:1}.sp .tag,.sp .kept{opacity:1}.sp .file{opacity:.25}.sp .file:after,.hb .bars i{transform:none}.hb .bars i{transform:scaleY(1)}.pp{bottom:6%}}
 @media(max-width:900px){.cnt{right:auto;left:52%;top:18%}.pp{left:34%;width:56%}}"""
 HOURS = [2, 2, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 2, 1, 1, 3, 6]   # 시연 데이터 시간대별 건수(StoreDemo)
 WAVE = '<svg viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>'
