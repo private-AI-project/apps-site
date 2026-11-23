@@ -4,7 +4,13 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 MAIN=../main-site
-TARGET=new python3 tools/build.py >/dev/null
+# 파이썬 3.12 이상 + Pillow 가 필요하다(맥 기본 python3 은 3.9 라 안 됨). 없으면 uv 로 .venv 를 만든다(2026-11-23, 판 카드 #102).
+PY=.venv/bin/python
+if ! "$PY" -c 'import PIL' 2>/dev/null; then
+  uv venv -q --python 3.13 .venv && uv pip install -q --python "$PY" pillow
+fi
+[ -d "$MAIN/node_modules" ] || (cd "$MAIN" && npm ci)
+TARGET=new "$PY" tools/build.py >/dev/null
 (cd "$MAIN" && SITE_TARGET=app npm run build >/dev/null)
 for d in tools days blog _astro c g s game og apps work; do
   [ -d "$MAIN/dist-app/$d" ] && rsync -a --ignore-existing "$MAIN/dist-app/$d" dist-app/

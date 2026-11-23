@@ -9,3 +9,4 @@ dist-app/
 !.dev.vars.example
 .env*
 !.env.example
+.venv/
